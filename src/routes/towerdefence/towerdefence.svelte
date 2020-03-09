@@ -1,22 +1,14 @@
-<!-- TODO
 <script>
   import { onMount } from "svelte";
-  import Game from "./pacmanStage.js";
+  import World from "./classes/world.js";
   let canvas, uFPS, rFPS;
 
   onMount(() => {
-    //create pacman stage
-    let game = new Game(canvas);
+    let game = new World(canvas);
+    game.createDemoWorld()
     game.start();
-
-    //subscript fps
-    update_fps.subscribe(val => {
-      uFPS = val;
-    });
-
-    render_fps.subscribe(val => {
-      rFPS = val;
-    });
+    console.log(game)
+    console.log("START")
   });
 </script>
 
@@ -27,16 +19,12 @@
     font-weight: 100;
   }
 
-  .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-  }
+  
   canvas {
     position: fixed;
     top: 0;
     left: 0;
-    background-color: black;
+    background-color: white;
   }
 </style>
 
@@ -45,8 +33,3 @@
   height={window.innerHeight}
   bind:this={canvas} />
 
-<div class="overlay">
-  <h1>Render FPS: {rFPS}</h1>
-  <h1>Update FPS: {uFPS}</h1>
-</div>
--->

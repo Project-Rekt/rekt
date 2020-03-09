@@ -2,32 +2,29 @@ import Engine from 'engine';
 
 export default class Player extends Engine.Actor {
     constructor(hp, currency) {
+        super({});
         this.currency = currency;
         this.hp = hp
     }
 
-    // Function to add money.
+    //Function to add money.
     gainMoney(money) {
         this.currency += money;
     }
 
-    // Function to subtract money.
+    //Function to subtract money.
     spendMoney(money) {
         this.currency -= money;
     }
 
-    // Function to return currency.
-    getMoney() {
+    getMoney(){
         return this.currency
     }
-
-    // Function to return Hp.
-    getHp() {
+    getHp(){
         return this.hp
     }
 
-    // Function to to take damage.
-    damage(damage) {
+    damage(damage){
         this.hp -= damage
     }
 }

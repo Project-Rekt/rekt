@@ -1,7 +1,7 @@
 import Home from './routes/home.svelte'
-import Pacman from './routes/pacman/pacman.svelte'
+import TowerDefence from './routes/towerdefence/towerdefence.svelte'
 
 export default {
     '/': Home,
-    '/pacman': Pacman
+    '/towerdefence': TowerDefence,
 }

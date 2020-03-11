@@ -6,23 +6,28 @@ export default class WaveTimer extends Engine.Actor{
         this.spawners = []
         this.waveStep = 1
         this.waves = []
-
+        this.enabled = true
     }
 
     update = (dt) => {
         //console.log(this.waveCompleted())
+        if (!this.enabled){
+            return
+        }
+        if(this.waveStep > this.waves.length){
+            return
+        }
         if (this.waveCompleted()){
             console.log("starting wave " + this.waveStep)
             
             this.startWave()
+            //this.enabled = false
         }
     }
 
 
     startWave(){
-        if(this.waveStep > this.waves.length){
-            return
-        }
+        
         for(let i = 0; i < this.spawners.length; i++){
             this.spawners[i].setMobs(this.waves[this.waveStep-1][i])
         }
@@ -39,6 +44,7 @@ export default class WaveTimer extends Engine.Actor{
     }
 
     waveCompleted(){
+        //console.log(this.stage.events)
         for(let i = 0; i < this.spawners.length; i++){
             if (!this.spawners[i].mobsExhausted()){
                 return false
@@ -47,5 +53,10 @@ export default class WaveTimer extends Engine.Actor{
         return true
     }
 
-
+    enable(){
+        this.enabled = true
+    }
+    disable(){
+        this.enabled = false
+    }
 }

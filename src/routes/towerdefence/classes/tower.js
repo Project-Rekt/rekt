@@ -17,9 +17,10 @@ export default class Tower extends Engine.Actor {
     }
 
     update = (dt) => {
-        if (this.target == null || this.target.hasReachedGoal() || this.target.isDead() || !this.targetInRange()){
+        if (this.target == null || !this.target.isActive() ||  this.target.hasReachedGoal() || this.target.isDead() || !this.targetInRange()){
             //console.log("seeking target")
             this.findTarget()
+            return
         }
         if(this.target == null){
             

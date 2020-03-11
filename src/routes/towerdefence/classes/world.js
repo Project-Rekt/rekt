@@ -10,11 +10,18 @@ import Player from './player'
 import Spawner from './spawner'
 import Tower from './tower'
 import WaveTimer from './waveTimer'
+import InputHandler from 'engine'
+import Shop from './shop';
 
 export default class World extends Engine.Stage {
     constructor(elem){
         super(elem)
-        this.player = new Player(100, 200)
+        this.player = new Player(500, 200)
+        this.shop = new Shop()
+        this.spawners = []
+        this.waveTimer = null
+        this.pather = null
+        this.events = 0
         //this.activeEnemies = []
     }
 
@@ -39,6 +46,9 @@ export default class World extends Engine.Stage {
             [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 2], //11
           //[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11]
         ];
+        let waves = this.generateSpawnList(50, 3, 6, 50, 5, .3, 0, 1, .05)
+        console.log(waves.length + " waves")
+        /*
         let waves = [
             [//wave1
                 //spawner1
@@ -71,8 +81,9 @@ export default class World extends Engine.Stage {
                 ]
             ]
         ]
-        //console.log(waves[0][0])
-        let waveTimer = new WaveTimer()
+        */
+        //console.log(waves[0])
+        this.waveTimer = new WaveTimer()
 
         
 
@@ -96,25 +107,26 @@ export default class World extends Engine.Stage {
             new Spawner(6, 2),
             new Spawner(8, 5)
         ]
-        let pather = new Pather()
-        pather.initializeGraph(matrix)
+        this.pather = new Pather()
+        this.pather.initializeGraph(matrix)
         for(let i = 0; i < this.spawners.length; i++){
-            this.spawners[i].setPath(pather.findShortestPathToEnds(this.spawners[i].getPosition()[0], this.spawners[i].getPosition()[1]))
+            this.spawners[i].setPath(this.pather.findShortestPathToEnds(this.spawners[i].getPosition()[0], this.spawners[i].getPosition()[1]))
             this.addActor(this.spawners[i], 8);
         }
-        waveTimer.setSpawners(this.spawners)
-        waveTimer.setWaves(waves)
+        this.waveTimer.setSpawners(this.spawners)
+        this.waveTimer.setWaves(waves)
 
-        this.addActor(waveTimer, 0)
+        this.addActor(this.waveTimer, 0)
         
         this.addActor(new EndPoint(11, 11), 8);
         this.addActor(new Tower(30, 1, "nearest", 3, 2, 3), 10);
         this.addActor(new Tower(10, .3, "nearest", 3, 7, 1), 10);
         this.addActor(new Tower(45, 4, "nearest", 2, 3, 8), 10);
-        this.addActor(new Tower(60, 8, "nearest", 6, 8, 7), 10);
+        this.addActor(new Tower(60, 20, "nearest", 6, 8, 7), 10);
 
+        this.addActor(this.player)
 
-        console.log(this.children)
+        //console.log(this.children)
     }
 
     lineSpawn(startTime, gapTime, hp, speed, def, number){
@@ -125,14 +137,45 @@ export default class World extends Engine.Stage {
         return list
     }
 
+    generateSpawnList(waveCount, spawnerCount, enemyCount, gapTime, hp, speed, def, hpScale, speedScale){
+        let waves = []
+        let id = 1
+        for(let i = 0; i < waveCount; i++){
+            let wave = []
+            for(let j = 0; j < spawnerCount; j++){
+                let spawnList = []
+                for(let k = 0; k < enemyCount; k++){
+                    let monster = new Monster(hp + hpScale*i, speed + speedScale*i, def)
+                    monster.id = id
+                    id++
+                    spawnList.push([gapTime*k, monster])
+                }
+                wave.push(spawnList)
+            }
+            waves.push(wave)
+        }
+        return waves
+    }
+
     enemyReachedGoal(){
-        this.player.damage(1)
-        console.log("player damage! current health: " + this.player.getHp())
+        if(!this.player.isDead()){
+            this.player.damage(1)
+            console.log("player damage! current health: " + this.player.getHp())
+        }
+        this.events++
     }
 
     enemyKilled(){
-        this.player.gainMoney(1)
-        console.log("enemy killed! current money: " + this.player.getMoney())
+        if (!this.player.isDead()){
+            this.player.gainMoney(1)
+            console.log("enemy killed! current money: " + this.player.getMoney())
+        }
+        this.events++
+    }
+
+    playerKilled(){
+        console.log("Player has died...")
+        this.waveTimer.disable()
     }
 
 
@@ -147,25 +190,14 @@ export default class World extends Engine.Stage {
         //console.log("enemies on map")
         for (let i = 0; i < enemyLayer.length; i++){
             let a = enemyLayer[i]
-            if (a instanceof Monster){
+            if (a instanceof Monster && a.isActive()){
                 activeEnemies.push(a)
             }
         }
         return activeEnemies
     }
+    
 }
-
-/*
- * spawn list in format of
- * 
- * [ <- every contained list in this bracket is a wave
- *      [ <- every contained list is a group of enemies for a spawner to take
- *          [ <- every contained list is a pair of [timing, monster]
- *              [timing, monster]
- *          ]
- *      ]
- * ]
- */
 /*
 let this = new World(document.querySelector('#main'));
 console.log("start")

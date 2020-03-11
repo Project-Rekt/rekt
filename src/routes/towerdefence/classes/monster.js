@@ -16,6 +16,8 @@ export default class Monster extends Engine.Actor {
         this.step = 0
         this.reachedGoal = false
         this.dead = false
+        this.active = true
+        this.id = 0
     }
 
     render = (dt) => {
@@ -37,17 +39,23 @@ export default class Monster extends Engine.Actor {
 
     update = (dt) => {
         //console.log("acting! " + this.getPosition() + " hp: " + this.getHp())
+        //console.log(this.id + " acting")
         if (this.isDead()){
+            this.active = false
             //console.log("Dead! " + this.getPosition() + " hp: " + this.getHp())
+            //console.log(this)
             this.stage.enemyKilled()
             this.destroy(dt)
+            return
         }
         moveOverPath(this, dt)
-        this.distance -= this.speed*dt
+        //this.distance -= this.speed*dt
         this.updateRealPosition()
         if (this.hasReachedGoal()){
+            this.active = false
             this.stage.enemyReachedGoal()
             //console.log("Reached goal! " + this.getPosition())
+            //console.log(this)
             this.destroy(dt)
         }
 
@@ -163,5 +171,7 @@ export default class Monster extends Engine.Actor {
         edgePath.push(path[path.length - 1]);
         return edgePath;
     }
-
+    isActive(){
+        return this.active
+    }
 }

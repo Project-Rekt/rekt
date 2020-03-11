@@ -1,5 +1,17 @@
 import Engine from 'engine';
 
+/*
+ * spawn list in format of
+ * 
+ * [ <- every contained list in this bracket is a wave
+ *      [ <- every contained list is a group of enemies for a spawner to take
+ *          [ <- every contained list is a pair of [timing, monster]
+ *              [timing, monster]
+ *          ]
+ *      ]
+ * ]
+ */
+
 export default class Spawner extends Engine.Actor {
     constructor(x, y) {
         super({});
@@ -17,7 +29,9 @@ export default class Spawner extends Engine.Actor {
     mobsExhausted(){
         if (this.mobs.length == 0){
             for(let i = 0; i < this.spawned.length; i++){
-                if (!(this.spawned[i].isDead() || this.spawned[i].hasReachedGoal())){
+                if (this.spawned[i].isActive()){//!(this.spawned[i].isDead() || this.spawned[i].hasReachedGoal())){
+                    //console.log("not exhausted")
+                    //console.log(this.spawned[i].id)
                     return false
                 }
             }

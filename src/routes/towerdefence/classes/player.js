@@ -26,5 +26,11 @@ export default class Player extends Engine.Actor {
 
     damage(damage){
         this.hp -= damage
+        if(this.isDead()){
+            this.stage.playerKilled()
+        }
+    }
+    isDead(){
+        return this.hp <= 0
     }
 }

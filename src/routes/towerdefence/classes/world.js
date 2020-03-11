@@ -16,7 +16,7 @@ import Shop from './shop';
 export default class World extends Engine.Stage {
     constructor(elem){
         super(elem)
-        this.player = new Player(100, 200)
+        this.player = new Player(500, 200)
         this.shop = new Shop()
         this.spawners = []
         this.waveTimer = null
@@ -46,7 +46,7 @@ export default class World extends Engine.Stage {
             [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 2], //11
           //[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11]
         ];
-        let waves = this.generateSpawnList(10, 3, 6, 50, 5, .3, 0, 3, .05)
+        let waves = this.generateSpawnList(50, 3, 6, 50, 5, .3, 0, 1, .05)
         console.log(waves.length + " waves")
         /*
         let waves = [

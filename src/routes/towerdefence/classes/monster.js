@@ -45,7 +45,8 @@ export default class Monster extends Engine.Actor {
             //console.log("Dead! " + this.getPosition() + " hp: " + this.getHp())
             //console.log(this)
             this.stage.enemyKilled()
-            this.destroy()
+            this.destroy(dt)
+            return
         }
         moveOverPath(this, dt)
         //this.distance -= this.speed*dt

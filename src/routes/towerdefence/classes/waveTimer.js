@@ -6,7 +6,7 @@ export default class WaveTimer extends Engine.Actor{
         this.spawners = []
         this.waveStep = 1
         this.waves = []
-        this.enabled = true
+        this.enabled = false
     }
 
     update = (dt) => {
@@ -21,7 +21,7 @@ export default class WaveTimer extends Engine.Actor{
             console.log("starting wave " + this.waveStep)
             
             this.startWave()
-            //this.enabled = false
+            this.enabled = false
         }
     }
 
@@ -58,5 +58,8 @@ export default class WaveTimer extends Engine.Actor{
     }
     disable(){
         this.enabled = false
+    }
+    isEnabled(){
+        return this.enabled
     }
 }

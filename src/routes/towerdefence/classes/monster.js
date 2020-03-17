@@ -18,6 +18,8 @@ export default class Monster extends Engine.Actor {
         this.dead = false
         this.active = true
         this.id = 0
+        this.px = Math.round(this.bounds.x);
+        this.py = Math.round(this.bounds.y);
     }
 
     render = (dt) => {

@@ -10,7 +10,6 @@ import Player from './player'
 import Spawner from './spawner'
 import Tower from './tower'
 import WaveTimer from './waveTimer'
-import InputHandler from 'engine'
 import Shop from './shop';
 
 export default class World extends Engine.Stage {
@@ -22,6 +21,8 @@ export default class World extends Engine.Stage {
         this.waveTimer = null
         this.pather = null
         this.events = 0
+        this.matrix = null
+        this.towers = []
         //this.activeEnemies = []
     }
 
@@ -31,7 +32,7 @@ export default class World extends Engine.Stage {
      * place static objects (nodes, spawners, endpoint, towers, walls)
      */
     createDemoWorld(){
-        let matrix = [
+        this.matrix = [
             [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0], //0
             [0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0], //1
             [0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0], //2
@@ -46,57 +47,24 @@ export default class World extends Engine.Stage {
             [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 2], //11
           //[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11]
         ];
-        let waves = this.generateSpawnList(50, 3, 6, 50, 5, .3, 0, 1, .05)
+        let waves = this.generateSpawnList(50, 3, 6, 25, 5, .3, 0, 2, .05)
         console.log(waves.length + " waves")
-        /*
-        let waves = [
-            [//wave1
-                //spawner1
-                    this.lineSpawn(30, 10, 3, .07, 0, 10),
-                //spawner2
-                    this.lineSpawn(10, 4, 1, .04, 0, 20),
-                //spawner3
-                    this.lineSpawn(50, 20, 2, .07, 0, 5)
-            ],
-            [//wave2
-                [//spawner1
-                    [30, new Monster(10, .1, 0)],
-                    [100, new Monster(5, .02, 0)],
-                    [150, new Monster(20, .07, 0)],
-                    [250, new Monster(4, .8, 0)]
-                ],
-                [//spawner2
-                    [30, new Monster(10, .1, 0)],
-                    [50, new Monster(5, .02, 0)],
-                    [70, new Monster(10, .02, 0)],
-                    [120, new Monster(10, .4, 0)],
-                    [300, new Monster(300, .06, 0)]
-                ],
-                [//spawner3
-                    [30, new Monster(10, .1, 0)],
-                    [90, new Monster(5, .02, 0)],
-                    [130, new Monster(10, .02, 0)],
-                    [200, new Monster(10, .4, 0)],
-                    [230, new Monster(50, .01, 0)]
-                ]
-            ]
-        ]
-        */
-        //console.log(waves[0])
+        
         this.waveTimer = new WaveTimer()
 
         
-
+        //add nodes(blue dots) and lines (white gridlines)
         for (let i = 0; i <= 600; i += 50) {
             for (let j = 0; j <= 600; j += 50) {
                 this.addActor(new Node({ x: i - 25, y: j - 25, width: 2, height: 2 }), 0);
             }
-            this.addActor(new Line({ x: i, y: 0, width: 1, height: 600 }), 1);
-            this.addActor(new Line({ x: 0, y: i, width: 600, height: 1 }), 1);
+            this.addActor(new Line({ x: i, y: 0, width: 1, height: 600 }), 22);
+            this.addActor(new Line({ x: 0, y: i, width: 600, height: 1 }), 22);
         }
-        for(let i = 0; i < matrix.length; i++){
-            for(let j = 0; j < matrix[0].length; j++){
-                if(matrix[i][j] == 1){
+        //add obstacles
+        for(let i = 0; i < this.matrix.length; i++){
+            for(let j = 0; j < this.matrix[0].length; j++){
+                if(this.matrix[i][j] == 1){
                     this.addActor(new Block(j, i), 5)
                 }
             }
@@ -107,10 +75,9 @@ export default class World extends Engine.Stage {
             new Spawner(6, 2),
             new Spawner(8, 5)
         ]
-        this.pather = new Pather()
-        this.pather.initializeGraph(matrix)
+        this.pathSpawners()
+        
         for(let i = 0; i < this.spawners.length; i++){
-            this.spawners[i].setPath(this.pather.findShortestPathToEnds(this.spawners[i].getPosition()[0], this.spawners[i].getPosition()[1]))
             this.addActor(this.spawners[i], 8);
         }
         this.waveTimer.setSpawners(this.spawners)
@@ -118,15 +85,19 @@ export default class World extends Engine.Stage {
 
         this.addActor(this.waveTimer, 0)
         
-        this.addActor(new EndPoint(11, 11), 8);
-        this.addActor(new Tower(30, 1, "nearest", 3, 2, 3), 10);
-        this.addActor(new Tower(10, .3, "nearest", 3, 7, 1), 10);
-        this.addActor(new Tower(45, 4, "nearest", 2, 3, 8), 10);
-        this.addActor(new Tower(60, 20, "nearest", 6, 8, 7), 10);
+        this.addActor(new EndPoint(11, 11), 100);
+        this.tryAddNewTower(new Tower(15, 2, "nearest", 3, 1, 3));
+        this.tryAddNewTower(new Tower(10, 1, "nearest", 3, 0, 3)); //meant to fail
+        this.tryAddNewTower(new Tower(2, .3, "nearest", 3, 10, 4));
+        this.tryAddNewTower(new Tower(3, 5, "nearest", 2, 3, 8));
+        this.tryAddNewTower(new Tower(40, 20, "nearest", 6, 8, 7));
 
         this.addActor(this.player)
 
         //console.log(this.children)
+        
+        this.createInputhandler()
+        console.log(this.matrix)
     }
 
     lineSpawn(startTime, gapTime, hp, speed, def, number){
@@ -137,6 +108,7 @@ export default class World extends Engine.Stage {
         return list
     }
 
+    //generates spawn list with specifications, including base stats and the amount they scale by per turn
     generateSpawnList(waveCount, spawnerCount, enemyCount, gapTime, hp, speed, def, hpScale, speedScale){
         let waves = []
         let id = 1
@@ -160,7 +132,7 @@ export default class World extends Engine.Stage {
     enemyReachedGoal(){
         if(!this.player.isDead()){
             this.player.damage(1)
-            console.log("player damage! current health: " + this.player.getHp())
+            //console.log("player damage! current health: " + this.player.getHp())
         }
         this.events++
     }
@@ -168,7 +140,7 @@ export default class World extends Engine.Stage {
     enemyKilled(){
         if (!this.player.isDead()){
             this.player.gainMoney(1)
-            console.log("enemy killed! current money: " + this.player.getMoney())
+            //console.log("enemy killed! current money: " + this.player.getMoney())
         }
         this.events++
     }
@@ -179,6 +151,7 @@ export default class World extends Engine.Stage {
     }
 
 
+    //get all enemies currently in the world that is not dead or reached the end
     getActiveEnemies(){
         let enemyLayerID = 9
         let activeEnemies = []
@@ -195,6 +168,153 @@ export default class World extends Engine.Stage {
             }
         }
         return activeEnemies
+    }
+
+    //return true if it is possible to add a tower and add it
+    //does not check money
+    tryAddNewTower(tower){
+        //if (this.matrix[tower.positionY][tower.positionX] == 0){
+        if (this.probeNewBlockage(tower.positionX, tower.positionY)){
+            this.addActor(tower, 10)
+            this.towers.push(tower)
+            this.matrix[tower.positionY][tower.positionX] = 1
+            this.pathSpawners()
+            return true
+        }
+        return false
+        
+    }
+
+    //return if adding a blockage at x y in the matrix will result in all spawners able to find an end
+    probeNewBlockage(x, y){
+        let testMatrix = this.cloneMatrix(this.matrix)
+        testMatrix[y][x] = 1
+        let pather = new Pather()
+        pather.initializeGraph(testMatrix)
+        //console.log(testMatrix)
+        for(let i = 0; i < this.spawners.length; i++){
+            //console.log(this.spawners[i].getPosition()[0] + ", " + this.spawners[i].getPosition()[1])
+            if(pather.findShortestPathToEnds(this.spawners[i].getPosition()[0], this.spawners[i].getPosition()[1]) == null){
+                //console.log("Blockage detected at " + x + ", " + y)
+                return false
+            }
+        }
+        return true
+    }
+
+    cloneMatrix(matrix){
+        let m2 = []
+        //console.log(matrix)
+        for(let i = 0; i < matrix.length; i++){
+            let row = []
+            for(let j = 0; j < matrix.length; j++){
+                row.push(matrix[i][j])
+            }
+            m2.push(row)
+        }
+        return m2
+    }
+
+    //iterate through all spawners in world, set path for each to an end
+    pathSpawners(){
+        let pather = new Pather()
+        pather.initializeGraph(this.matrix)
+        for(let i = 0; i < this.spawners.length; i++){
+            this.spawners[i].setPath(pather.findShortestPathToEnds(this.spawners[i].getPosition()[0], this.spawners[i].getPosition()[1]))
+        }
+    }
+
+    /*
+     * input handler calls this
+     * action is determined by what the user clicked on
+     * 0 -> attempt to place turret
+     * 1 -> attempt to upgrade turret
+     * 2 -> attempt to start next wave
+     * 0 and 2 will check and deplete player currency and give an error message otherwise
+     * 3 will only activate if all enemies are dead
+     * 1 will only activate if all enemies are dead
+     */
+    playerInteract(x, y){
+        if(this.matrix[y][x] == 0 && this.waveTimer.waveCompleted()){
+            if (this.player.getMoney() >= 50){
+                if (this.tryAddNewTower(new Tower(30, 1, "nearest", 3, x, y))){
+                    this.player.spendMoney(50)
+                }
+                else{
+                    console.log("Can't block enemy path")
+                }
+            }
+            else{
+                console.log("Need 50 money to buy turret")
+            }
+        }
+        else if(this.matrix[y][x] == 1){
+            let t = this.getTower(x, y)
+            if (t == null){
+                //console.log("")
+            }
+            else{
+                if (this.player.getMoney() >= 20){
+                    this.upgradeTower(t)
+                    this.player.spendMoney(20)
+                }
+                else{
+                    console.log("Need 20 money to upgrade a turret")
+                }
+            }
+        }
+        else if(this.matrix[y][x] == 2 && this.waveTimer.waveCompleted()){
+            this.waveTimer.enable()
+        }
+    }
+
+    upgradeTower(tower){
+        tower.atk += 1
+        tower.range += .5
+    }
+
+    //get a tower with the given virtual xy coords
+    getTower(x, y){
+        for(let i = 0; i < this.towers.length; i++){
+            let t = this.towers[i]
+            if (t.positionX == x && t.positionY == y){
+                return t
+            }
+        }
+        return null
+    }
+
+    //create handler, start it, give it references
+    createInputhandler(){
+        let stage = this
+        let inp = new Engine.InputHandler(document.querySelector('body'), {
+            mousedown: function () {
+                let xy = stage.getMouseXYSector(this)
+                if (!stage.isValidSector(xy)){
+                    return
+                }
+                //console.log(xy[0] + ", " + xy[1])//this.getMouseXY())//this.input.x + ", " + this.input.y);
+                stage.playerInteract(xy[0], xy[1])
+            }
+        });
+        
+        inp.startHandler();
+    }
+    //return if indices are in bounds of map
+    isValidSector(sector){
+        return sector[0] >= 0 && sector[0] <= 11 && sector[1] >= 0 && sector[1] <= 11
+    }
+    //given indices of matrix, convert to real coordinates
+    translateSectorToCoord(sector){
+        return [sector[0] * 50, sector[1] * 50]
+    }
+    //get mouse coords in term of matrix index
+    getMouseXYSector(handler){
+        return [Math.floor(handler.input.x / 50), Math.floor(handler.input.y / 50)]
+    }
+    //get real mouse coords
+    getMouseXY(handler){
+        return [handler.input.x, handler.input.y]
     }
     
 }

@@ -1,4 +1,5 @@
 import Engine from 'engine';
+import BulletLine from './bulletLine';
 
 export default class Tower extends Engine.Actor {
     constructor(atkspeed, atk, targetingMode, range, x, y) {
@@ -17,6 +18,10 @@ export default class Tower extends Engine.Actor {
     }
 
     update = (dt) => {
+        this.shotTimer += dt
+        if (this.shotTimer > this.atkspeed){
+            this.shotTimer = this.atkspeed
+        }
         if (this.target == null || !this.target.isActive() ||  this.target.hasReachedGoal() || this.target.isDead() || !this.targetInRange()){
             //console.log("seeking target")
             this.findTarget()
@@ -37,7 +42,6 @@ export default class Tower extends Engine.Actor {
     }
 
     shoot(time){
-        this.shotTimer += time
         if (this.shotTimer >= this.atkspeed){
             //console.log("shooting!")
             this.shotTimer -= this.atkspeed
@@ -46,10 +50,14 @@ export default class Tower extends Engine.Actor {
     }
 
     fireBulletNoProjectile(){
+        this.stage.addActor(new BulletLine(50, this.realX, this.realY, this.target.px + 25, this.target.py + 25), 30)
+        //console.log(this.realX + " " + this.realY + " " + this.target.px + " " + this.target.py)
         this.target.takeDamage(this.atk)
     }
 
     render = (dt) => {
+        this.ctx.fillStyle = "blue";
+        this.ctx.fillRect(this.realX - 24, this.realY - 24, 49, 49);
 
         this.ctx.fillStyle = "white";
         this.ctx.font = "20px Arial";

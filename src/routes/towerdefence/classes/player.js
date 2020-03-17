@@ -10,11 +10,13 @@ export default class Player extends Engine.Actor {
     //Function to add money.
     gainMoney(money) {
         this.currency += money;
+        console.log("Wallet = " + this.currency)
     }
 
     //Function to subtract money.
     spendMoney(money) {
         this.currency -= money;
+        console.log("Wallet = " + this.currency)
     }
 
     getMoney(){
@@ -26,6 +28,7 @@ export default class Player extends Engine.Actor {
 
     damage(damage){
         this.hp -= damage
+        console.log("HP = " + this.hp)
         if(this.isDead()){
             this.stage.playerKilled()
         }

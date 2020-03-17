@@ -117,6 +117,9 @@ export default class Pather {
         let startNode = this.graph.getNode(xStart, yStart)
         this.findShortestPaths(startNode)
         let shortest = this.searchShortestPathToEnds()
+        if (shortest == null){
+            return null
+        }
         let shortestpath = shortest.shortestPath
         shortestpath.push(shortest)
         let result = this.convertPathToListOfLists(shortestpath)

@@ -5,6 +5,7 @@ export default class Player extends Engine.Actor {
         super({});
         this.currency = currency;
         this.hp = hp
+        this.towerSelect = null
     }
 
     //Function to add money.

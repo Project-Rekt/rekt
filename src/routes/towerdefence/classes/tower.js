@@ -15,6 +15,7 @@ export default class Tower extends Engine.Actor {
         this.aimAngle = 0.0
         this.target = null
         this.shotTimer = 0
+        this.color = 'blue'
     }
 
     update = (dt) => {
@@ -56,7 +57,7 @@ export default class Tower extends Engine.Actor {
     }
 
     render = (dt) => {
-        this.ctx.fillStyle = "blue";
+        this.ctx.fillStyle = this.color;
         this.ctx.fillRect(this.realX - 24, this.realY - 24, 49, 49);
 
         this.ctx.fillStyle = "white";

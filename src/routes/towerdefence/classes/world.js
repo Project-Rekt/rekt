@@ -12,13 +12,12 @@ import Tower from './tower'
 import WaveTimer from './waveTimer'
 import Shop from './shop';
 
-import Tower_New from './towerNew'
 import LightTower from './lightTower'
 import HeavyTower from './heavyTower'
-import BadButton from './placeholderclasses/towerSelect';
+
 import TowerSelect from './placeholderclasses/towerSelect';
-import TowerTypeA from './placeholderclasses/towerTypeA';
-import TowerTypeB from './placeholderclasses/towerTypeB';
+import WaveStart from './placeholderclasses/waveStart';
+import menuBackground from './placeholderclasses/menuBackground';
 
 export default class World extends Engine.Stage {
     constructor(elem){
@@ -56,7 +55,7 @@ export default class World extends Engine.Stage {
             [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 2], //11
           //[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11]
         ];
-        let waves = this.generateSpawnList(50, 3, 6, 25, 5, .3, 0, 2, .05)
+        let waves = this.generateSpawnList(50, 3, 6, 25, 5, .1, 0, 2, .02)
         console.log(waves.length + " waves")
         
         this.waveTimer = new WaveTimer()
@@ -98,7 +97,10 @@ export default class World extends Engine.Stage {
         this.tryAddNewTower(new LightTower(1, 3));
         this.tryAddNewTower(new HeavyTower(10, 4));
 
+        this.addActor(this.player.wallet, 40)
+        this.addActor(this.player.lifeCounter, 40)
         this.addActor(this.player)
+        this.addActor(new menuBackground(), 0)
 
         //console.log(this.children)
         
@@ -108,12 +110,21 @@ export default class World extends Engine.Stage {
     }
 
     createButtons(){
-        let b = new TowerSelect(650, 100, "Type A", TowerTypeA)
+        let b = new TowerSelect(680, 100, "Light Tower", LightTower)
         this.addActor(b)
         this.buttons.push(b)
-        b = new TowerSelect(725, 100, "Type B", TowerTypeB)
+        b = new TowerSelect(680, 175, "Heavy Tower", HeavyTower)
         this.addActor(b)
         this.buttons.push(b)
+        b = new WaveStart(680, 500, "Start Wave")
+        this.addActor(b)
+        this.buttons.push(b)
+    }
+
+    startWave(){
+        if(this.waveTimer.waveCompleted()){
+            this.waveTimer.enable()
+        }
     }
 
     lineSpawn(startTime, gapTime, hp, speed, def, number){
@@ -255,16 +266,17 @@ export default class World extends Engine.Stage {
             let b = this.player.towerSelect == null
             //console.log(b)
             if (!b){
-                if (this.player.getMoney() >= 50){
+                let tower = new this.player.towerSelect(x, y)
+                if (this.player.getMoney() >= tower.cost){
                     if (this.tryAddNewTower(new this.player.towerSelect(x, y))){//Tower(30, 1, "nearest", 3, x, y))){
-                        this.player.spendMoney(50)
+                        this.player.spendMoney(tower.cost)
                     }
                     else{
                         console.log("Can't block enemy path")
                     }
                 }
                 else{
-                    console.log("Need 50 money to buy turret")
+                    console.log("Need " + tower.cost + " money to buy turret")
                 }
             }
             else{
@@ -286,9 +298,11 @@ export default class World extends Engine.Stage {
                 }
             }
         }
+        /*
         else if(this.matrix[y][x] == 2 && this.waveTimer.waveCompleted()){
             this.waveTimer.enable()
         }
+        */
     }
 
     upgradeTower(tower){

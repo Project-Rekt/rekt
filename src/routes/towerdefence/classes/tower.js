@@ -1,21 +1,30 @@
 import Engine from 'engine';
 import BulletLine from './bulletLine';
 
+const targeting = Object.freeze({
+    HIGH_HP: "highestHP",
+    LOW_HP: "lowestHP",
+    NEAR: "nearest",
+    FAR: "furthest"
+})
+
 export default class Tower extends Engine.Actor {
-    constructor(atkspeed, atk, targetingMode, range, x, y) {
+    constructor(x, y) {
         super({});
-        this.atkspeed = atkspeed;
-        this.atk = atk;
-        this.targetingMode = targetingMode;
-        this.range = range;
-        this.positionX = x
-        this.positionY = y
+        
+        this.atkspeed;
+        this.atk;
+        this.targetingMode = targeting.NEAR;
+        this.range;
+        this.positionX = x;
+        this.positionY = y;
         this.realX = (x + 1) * 50 - 25;
         this.realY = (y + 1) * 50 - 25;
-        this.aimAngle = 0.0
-        this.target = null
-        this.shotTimer = 0
-        this.color = 'blue'
+        this.aimAngle = 0.0;
+        this.target = null;
+        this.shotTimer = 0;
+        this.cost;
+        this.level = 1;
     }
 
     update = (dt) => {
@@ -57,18 +66,7 @@ export default class Tower extends Engine.Actor {
     }
 
     render = (dt) => {
-        this.ctx.fillStyle = this.color;
-        this.ctx.fillRect(this.realX - 24, this.realY - 24, 49, 49);
 
-        this.ctx.fillStyle = "white";
-        this.ctx.font = "20px Arial";
-        this.ctx.textAlign = "center";
-        this.ctx.fillText("T", this.realX, this.realY + 10);
-
-        this.ctx.strokeStyle = "white";
-        this.ctx.beginPath();
-        this.ctx.arc(this.realX, this.realY, this.range * 50, 0, 2 * Math.PI);
-        this.ctx.stroke();
     }
 
     turnToTarget(target){
@@ -94,6 +92,7 @@ export default class Tower extends Engine.Actor {
         let inRange = this.findInRadius(this.stage.getActiveEnemies())
         this.target = this.prioritizeTarget(inRange)
     }
+
     findInRadius(entities) {
         let h = this.positionX;
         let k = this.positionY;
@@ -110,12 +109,13 @@ export default class Tower extends Engine.Actor {
     
         return array;
     }
+
     prioritizeTarget(entities) {
         let target = entities[0];
     
         switch (this.targetingMode) {
             //Target monster with the lowest HP.
-            case "lowestHP":
+            case targeting.LOW_HP:
                 entities.forEach(element => {
                     if (element.hp < target.hp) {
                         target = element;
@@ -124,7 +124,7 @@ export default class Tower extends Engine.Actor {
                 break;
             
             //Target monster with the highest HP.
-            case "highestHP":
+            case targeting.HIGH_HP:
                 entities.forEach(element => {
                     if (element.hp > target.hp) {
                         target = element;
@@ -133,7 +133,7 @@ export default class Tower extends Engine.Actor {
                 break;
             
             //Target monster nearest to the end point.
-            case "nearest":
+            case targeting.NEAR:
                 entities.forEach(element => {
                     if (element.distance < target.distance) {
                         target = element;
@@ -142,7 +142,7 @@ export default class Tower extends Engine.Actor {
                 break;
             
             //Target monster furthest to the end point.
-            case "furthest":
+            case targeting.FAR:
                 entities.forEach(element => {
                     if (element.distance > target.distance) {
                         target = element;
@@ -154,6 +154,10 @@ export default class Tower extends Engine.Actor {
         return target;
     }
 
+    upgradeTower = () => {
+
+    }
+
     //Function to change targeting mode.
     setMode(targetingMode) {
         this.targetingMode = targetingMode;
@@ -163,4 +167,5 @@ export default class Tower extends Engine.Actor {
     setRange(range) {
         this.range = range;
     }
+
 }

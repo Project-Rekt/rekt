@@ -1,11 +1,11 @@
 //Low damage but fast firing tower
-import Tower_New from './towerNew'
+import Tower from './tower'
 
-export default class LightTower extends Tower_New{
+export default class LightTower extends Tower{
     constructor(x, y){
         super(x, y);
-        this.atkspeed = 20;
-        this.atk = 4;
+        this.atkspeed = 7;
+        this.atk = 3;
         this.range = 3;
         this.cost = 50;
     }

@@ -24,6 +24,7 @@ export default class BadButton extends Engine.Actor {
     }
     
     render = (dt) => {
+
         this.ctx.fillStyle = "red";
         this.ctx.fillRect(this.x - 24, this.y - 24, 50, 50);
 

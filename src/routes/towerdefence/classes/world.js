@@ -11,6 +11,10 @@ import Spawner from './spawner'
 import Tower from './tower'
 import WaveTimer from './waveTimer'
 import Shop from './shop';
+import BadButton from './placeholderclasses/towerSelect';
+import TowerSelect from './placeholderclasses/towerSelect';
+import TowerTypeA from './placeholderclasses/towerTypeA';
+import TowerTypeB from './placeholderclasses/towerTypeB';
 
 export default class World extends Engine.Stage {
     constructor(elem){
@@ -23,6 +27,7 @@ export default class World extends Engine.Stage {
         this.events = 0
         this.matrix = null
         this.towers = []
+        this.buttons = []
         //this.activeEnemies = []
     }
 
@@ -34,14 +39,14 @@ export default class World extends Engine.Stage {
     createDemoWorld(){
         this.matrix = [
             [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0], //0
-            [0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0], //1
-            [0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0], //2
+            [0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0], //1
+            [0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0], //2
             [0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0], //3
-            [0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0], //4
+            [0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0], //4
             [0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0], //5
-            [1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1], //6
+            [1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1], //6
             [0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0], //7
-            [0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0], //8
+            [0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0], //8
             [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0], //9
             [1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0], //10
             [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 2], //11
@@ -87,7 +92,6 @@ export default class World extends Engine.Stage {
         
         this.addActor(new EndPoint(11, 11), 100);
         this.tryAddNewTower(new Tower(15, 2, "nearest", 3, 1, 3));
-        this.tryAddNewTower(new Tower(10, 1, "nearest", 3, 0, 3)); //meant to fail
         this.tryAddNewTower(new Tower(2, .3, "nearest", 3, 10, 4));
         this.tryAddNewTower(new Tower(3, 5, "nearest", 2, 3, 8));
         this.tryAddNewTower(new Tower(40, 20, "nearest", 6, 8, 7));
@@ -97,7 +101,17 @@ export default class World extends Engine.Stage {
         //console.log(this.children)
         
         this.createInputhandler()
-        console.log(this.matrix)
+        this.createButtons()
+        //console.log(this.matrix)
+    }
+
+    createButtons(){
+        let b = new TowerSelect(650, 100, "Type A", TowerTypeA)
+        this.addActor(b)
+        this.buttons.push(b)
+        b = new TowerSelect(725, 100, "Type B", TowerTypeB)
+        this.addActor(b)
+        this.buttons.push(b)
     }
 
     lineSpawn(startTime, gapTime, hp, speed, def, number){
@@ -236,16 +250,23 @@ export default class World extends Engine.Stage {
      */
     playerInteract(x, y){
         if(this.matrix[y][x] == 0 && this.waveTimer.waveCompleted()){
-            if (this.player.getMoney() >= 50){
-                if (this.tryAddNewTower(new Tower(30, 1, "nearest", 3, x, y))){
-                    this.player.spendMoney(50)
+            let b = this.player.towerSelect == null
+            //console.log(b)
+            if (!b){
+                if (this.player.getMoney() >= 50){
+                    if (this.tryAddNewTower(new this.player.towerSelect(x, y))){//Tower(30, 1, "nearest", 3, x, y))){
+                        this.player.spendMoney(50)
+                    }
+                    else{
+                        console.log("Can't block enemy path")
+                    }
                 }
                 else{
-                    console.log("Can't block enemy path")
+                    console.log("Need 50 money to buy turret")
                 }
             }
             else{
-                console.log("Need 50 money to buy turret")
+                console.log("Select a tower to purchase")
             }
         }
         else if(this.matrix[y][x] == 1){
@@ -284,6 +305,14 @@ export default class World extends Engine.Stage {
         return null
     }
 
+    checkButtons(xy){
+        for(let i = 0; i < this.buttons.length; i++){
+            if (this.buttons[i].isClicked(xy[0], xy[1])){
+                this.buttons[i].activate()
+            }
+        }
+    }
+
     //create handler, start it, give it references
     createInputhandler(){
         let stage = this
@@ -291,6 +320,7 @@ export default class World extends Engine.Stage {
             mousedown: function () {
                 let xy = stage.getMouseXYSector(this)
                 if (!stage.isValidSector(xy)){
+                    stage.checkButtons(stage.getMouseXY(this))
                     return
                 }
                 //console.log(xy[0] + ", " + xy[1])//this.getMouseXY())//this.input.x + ", " + this.input.y);
@@ -300,6 +330,10 @@ export default class World extends Engine.Stage {
         
         inp.startHandler();
     }
+    selectBuyTower(tower){
+        this.player.towerSelect = tower
+    }
+
     //return if indices are in bounds of map
     isValidSector(sector){
         return sector[0] >= 0 && sector[0] <= 11 && sector[1] >= 0 && sector[1] <= 11

@@ -11,6 +11,9 @@ import Spawner from './spawner'
 import Tower from './tower'
 import WaveTimer from './waveTimer'
 import Shop from './shop';
+import Tower_New from './towerNew'
+import LightTower from './lightTower'
+import HeavyTower from './heavyTower'
 
 export default class World extends Engine.Stage {
     constructor(elem){
@@ -86,9 +89,9 @@ export default class World extends Engine.Stage {
         this.addActor(this.waveTimer, 0)
         
         this.addActor(new EndPoint(11, 11), 100);
-        this.tryAddNewTower(new Tower(15, 2, "nearest", 3, 1, 3));
+        this.tryAddNewTower(new LightTower(1, 3));
         this.tryAddNewTower(new Tower(10, 1, "nearest", 3, 0, 3)); //meant to fail
-        this.tryAddNewTower(new Tower(2, .3, "nearest", 3, 10, 4));
+        this.tryAddNewTower(new HeavyTower(10, 4));
         this.tryAddNewTower(new Tower(3, 5, "nearest", 2, 3, 8));
         this.tryAddNewTower(new Tower(40, 20, "nearest", 6, 8, 7));
 

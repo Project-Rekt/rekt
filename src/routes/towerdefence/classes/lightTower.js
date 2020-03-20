@@ -4,7 +4,7 @@ import Tower from './tower'
 export default class LightTower extends Tower{
     constructor(x, y){
         super(x, y);
-        this.atkspeed = 7;
+        this.atkspeed = 70;
         this.atk = 3;
         this.range = 3;
         this.cost = 50;
@@ -29,7 +29,7 @@ export default class LightTower extends Tower{
         if(this.level < 4){
             this.atk += 1
             this.range += 0.5
-            this.atkspeed -= 2
+            this.atkspeed -= 20
             this.level += 1
         }
     }

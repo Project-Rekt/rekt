@@ -1,14 +1,14 @@
 //Low damage but fast firing tower
 import Tower from './tower'
 
-export default class HeavyTower extends Tower{
-    constructor(x, y){
-        super(x, y);
-        this.atkspeed = 45;
-        this.atk = 15;
-        this.range = 6;
-        this.cost = 75;
-    }
+export default class HeavyTower extends Tower {
+  constructor(x, y) {
+    super(x, y);
+    this.atkspeed = 450;
+    this.atk = 15;
+    this.range = 6;
+    this.cost = 75;
+  }
 
     render = (dt) => {
         this.ctx.fillStyle = "orange";
@@ -25,12 +25,12 @@ export default class HeavyTower extends Tower{
         this.ctx.stroke();
     }
 
-    upgrade = () => {
-        if(this.level < 4){
-            this.atk += 2
-            this.range += 0.5
-            this.atkspeed -= 4
-            this.level += 1
-        }
+  upgrade = () => {
+    if (this.level < 4) {
+      this.atk += 2;
+      this.range += 0.5;
+      this.atkspeed -= 40;
+      this.level += 1;
     }
+}
 }

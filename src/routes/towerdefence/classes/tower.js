@@ -68,7 +68,9 @@ export default class Tower extends Engine.Actor {
         console.log("TOWER EFFECT: " + this.effect);
         console.log("MONSTER SPEED: " + this.target.speed);
         this.effect.attach(this.target);
-        console.log("MONSTER EFFECTS: " + this.target.effectsList);
+        console.log(
+          "MONSTER EFFECTS: " + JSON.stringify(this.target.effectsList)
+        );
         console.log("EFFECTS TIME: " + this.target.effectsList[0]["time"]);
         console.log("MONSTER SPEED: " + this.target.speed);
       }

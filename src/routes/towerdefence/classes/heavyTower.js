@@ -5,7 +5,7 @@ import Effect from "./effect";
 export default class HeavyTower extends Tower {
   constructor(x, y) {
     super(x, y);
-    this.atkspeed = 45;
+    this.atkspeed = 450;
     this.atk = 15;
     this.range = 6;
     this.cost = 75;
@@ -31,7 +31,7 @@ export default class HeavyTower extends Tower {
     if (this.level < 4) {
       this.atk += 2;
       this.range += 0.5;
-      this.atkspeed -= 4;
+      this.atkspeed -= 40;
       this.level += 1;
     }
   };

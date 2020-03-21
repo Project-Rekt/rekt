@@ -19,6 +19,8 @@ import TowerSelect from "./placeholderclasses/towerSelect";
 import WaveStart from "./placeholderclasses/waveStart";
 import menuBackground from "./placeholderclasses/menuBackground";
 
+import GUI from "../classes/ui/gui";
+
 export default class World extends Engine.Stage {
   constructor(elem) {
     super(elem);
@@ -32,6 +34,8 @@ export default class World extends Engine.Stage {
     this.towers = [];
     this.buttons = [];
     //this.activeEnemies = []
+
+    this.gui = new GUI(document.querySelector('.ui'), this);
   }
 
 
@@ -99,8 +103,8 @@ export default class World extends Engine.Stage {
     this.tryAddNewTower(new LightTower(1, 3));
     this.tryAddNewTower(new HeavyTower(10, 4));
 
-    this.addActor(this.player.wallet, 40);
-    this.addActor(this.player.lifeCounter, 40);
+    this.gui.addInterface(this.player.wallet);
+    this.gui.addInterface(this.player.lifeCounter);
     this.addActor(this.player);
     this.addActor(new menuBackground(), 0);
 
@@ -113,13 +117,16 @@ export default class World extends Engine.Stage {
 
   createButtons() {
     let b = new TowerSelect(680, 100, "Light Tower", LightTower);
-    this.addActor(b);
+    //this.addActor(b);
+    this.gui.addInterface(b);
     this.buttons.push(b);
     b = new TowerSelect(680, 175, "Heavy Tower", HeavyTower);
-    this.addActor(b);
+    //this.addActor(b);
+    this.gui.addInterface(b);
     this.buttons.push(b);
     b = new WaveStart(680, 500, "Start Wave");
-    this.addActor(b);
+    this.gui.addInterface(b);
+    //this.addActor(b);
     this.buttons.push(b);
   }
 
@@ -355,7 +362,7 @@ export default class World extends Engine.Stage {
       mousedown: function() {
         let xy = stage.getMouseXYSector(this);
         if (!stage.isValidSector(xy)) {
-          stage.checkButtons(stage.getMouseXY(this));
+          //stage.checkButtons(stage.getMouseXY(this));
           return;
         }
         //console.log(xy[0] + ", " + xy[1])//this.getMouseXY())//this.input.x + ", " + this.input.y);

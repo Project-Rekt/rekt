@@ -26,10 +26,19 @@
     left: 0;
     background-color: white;
   }
+
+  .ui {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+  }
 </style>
 
 <canvas
   width={window.innerWidth}
   height={window.innerHeight}
   bind:this={canvas} />
+<div class="ui"/>
 

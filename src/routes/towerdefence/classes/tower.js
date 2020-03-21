@@ -65,14 +65,14 @@ export default class Tower extends Engine.Actor {
       this.shotTimer -= this.atkspeed;
       this.fireBulletNoProjectile();
       if (this.effect != null) {
-        console.log("TOWER EFFECT: " + this.effect);
-        console.log("MONSTER SPEED: " + this.target.speed);
+        // console.log("TOWER EFFECT: " + this.effect);
+        // console.log("MONSTER SPEED: " + this.target.speed);
         this.effect.attach(this.target);
-        console.log(
-          "MONSTER EFFECTS: " + JSON.stringify(this.target.effectsList)
-        );
-        console.log("EFFECTS TIME: " + this.target.effectsList[0]["time"]);
-        console.log("MONSTER SPEED: " + this.target.speed);
+        // console.log(
+        //   "MONSTER EFFECTS: " + JSON.stringify(this.target.effectsList)
+        // );
+        // console.log("EFFECTS TIME: " + this.target.effectsList[0]["time"]);
+        // console.log("MONSTER SPEED: " + this.target.speed);
       }
     }
   }

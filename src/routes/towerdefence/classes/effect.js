@@ -3,7 +3,7 @@ export default class Effect {
     this.name = name;
     this.modifier = modifier;
     this.value = value;
-    this.maxTime = 5000;
+    this.maxTime = 2000;
   }
   attach(monster) {
     if (this.modifier == "def") {
@@ -12,6 +12,15 @@ export default class Effect {
     if (this.modifier == "speed") {
       monster.speed = this.value;
     }
-    monster.effectsList.push({ effect: this, time: 0 });
+    let contains = false;
+    for (var i = 0; i < monster.effectsList.length; i++) {
+      if (monster.effectsList[i]["effect"].name == this.name) {
+        contains = true;
+        break;
+      }
+    }
+    if (contains == false) {
+      monster.effectsList.push({ effect: this, time: 0 });
+    }
   }
 }

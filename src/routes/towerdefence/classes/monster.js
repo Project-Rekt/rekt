@@ -21,6 +21,7 @@ export default class Monster extends Engine.Actor {
     this.px = Math.round(this.bounds.x);
     this.py = Math.round(this.bounds.y);
     this.effectsList = [];
+    this.statRenew = { hp: this.hp, speed: this.speed, def: this.def };
   }
 
   render = dt => {
@@ -40,9 +41,44 @@ export default class Monster extends Engine.Actor {
     this.ctx.fillRect(this.px, this.py, this.bounds.width, this.bounds.height);
   };
 
+  renew(param) {
+    console.log(this.statRenew);
+    if (param == "hp") {
+      this.hp = this.statRenew["hp"];
+    }
+    if (param == "speed") {
+      this.speed = this.statRenew["speed"];
+    }
+    if (param == "def") {
+      this.def = this.statRenew["def"];
+    }
+  }
+
+  updateEffects(dt) {
+    // console.log(JSON.stringify(this.effectsList));
+    for (var i = 0; i < this.effectsList.length; i++) {
+      // console.log("UPDATING TIME: " + this.effectsList[i]["effect"].name);
+      this.effectsList[i]["time"] += dt;
+      if (
+        this.effectsList[i]["time"] >= this.effectsList[i]["effect"].maxTime
+      ) {
+        this.renew(this.effectsList[i]["effect"].modifier);
+        // console.log("EFFECT EXPIRED: " + this.effectsList[i]["effect"].name);
+        // console.log("MONSTER'S SPEED RENEWED TO: " + this.speed);
+        this.effectsList.pop(i);
+      } else {
+        // console.log(this.effectsList[i]["time"]);
+      }
+    }
+  }
+
   update = dt => {
     //console.log("acting! " + this.getPosition() + " hp: " + this.getHp())
     //console.log(this.id + " acting")
+    // if (this.effectsList != []) {
+    //   console.log(this.effectsList);
+    // }
+    this.updateEffects(dt);
     if (this.isDead()) {
       this.active = false;
       //console.log("Dead! " + this.getPosition() + " hp: " + this.getHp())
@@ -51,6 +87,7 @@ export default class Monster extends Engine.Actor {
       this.destroy(dt);
       return;
     }
+
     moveOverPath(this, dt);
     //this.distance -= this.speed*dt
     this.updateRealPosition();

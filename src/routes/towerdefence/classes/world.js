@@ -55,7 +55,7 @@ export default class World extends Engine.Stage {
             [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 2], //11
           //[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11]
         ];
-        let waves = this.generateSpawnList(50, 3, 6, 25, 5, .1, 0, 2, .02)
+        let waves = this.generateSpawnList(50, 3, 6, 25, 5, .005, 0, 2, .002)
         console.log(waves.length + " waves")
         
         this.waveTimer = new WaveTimer()

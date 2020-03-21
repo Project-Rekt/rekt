@@ -7,7 +7,6 @@
     let game = new World(canvas);
     game.createDemoWorld()
     game.start();
-    console.log(game)
     console.log("START")
   });
 </script>

@@ -15,11 +15,11 @@ import Shop from "./shop";
 import LightTower from "./lightTower";
 import HeavyTower from "./heavyTower";
 
-import TowerSelect from "./placeholderclasses/towerSelect";
-import WaveStart from "./placeholderclasses/waveStart";
-import menuBackground from "./placeholderclasses/menuBackground";
+import TowerSelect from "./ui/towerSelect";
+import WaveStart from "./ui/waveStart";
 
 import GUI from "../classes/ui/gui";
+import Notification from "../classes/ui/notification"
 
 export default class World extends Engine.Stage {
   constructor(elem) {
@@ -106,7 +106,6 @@ export default class World extends Engine.Stage {
     this.gui.addInterface(this.player.wallet);
     this.gui.addInterface(this.player.lifeCounter);
     this.addActor(this.player);
-    this.addActor(new menuBackground(), 0);
 
     //console.log(this.children)
 
@@ -303,13 +302,13 @@ export default class World extends Engine.Stage {
             //Tower(30, 1, "nearest", 3, x, y))){
             this.player.spendMoney(tower.cost);
           } else {
-            console.log("Can't block enemy path");
+            this.gui.addInterface(new Notification("Can't block enemy path"));
           }
         } else {
-          console.log("Need " + tower.cost + " money to buy turret");
+          this.gui.addInterface(new Notification("Need " + tower.cost + " money to buy turret"));
         }
       } else {
-        console.log("Select a tower to purchase");
+        this.gui.addInterface(new Notification("Select a tower to purchase"));
       }
     } else if (this.matrix[y][x] == 1) {
       let t = this.getTower(x, y);
@@ -320,7 +319,7 @@ export default class World extends Engine.Stage {
           this.upgradeTower(t);
           this.player.spendMoney(20);
         } else {
-          console.log("Need 20 money to upgrade a turret");
+          this.gui.addInterface(new Notification("Need 20 money to upgrade a turret"));
         }
       }
     }

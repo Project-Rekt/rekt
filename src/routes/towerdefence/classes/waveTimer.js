@@ -1,4 +1,5 @@
 import Engine from 'engine';
+import Notification from "./ui/notification";
 
 export default class WaveTimer extends Engine.Actor{
     constructor(){
@@ -18,6 +19,7 @@ export default class WaveTimer extends Engine.Actor{
             return
         }
         if (this.waveCompleted()){
+            this.stage.gui.addInterface(new Notification("starting wave " + this.waveStep))
             console.log("starting wave " + this.waveStep)
             
             this.startWave()

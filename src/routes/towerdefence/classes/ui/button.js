@@ -1,6 +1,8 @@
-export default class Button {
+import DOMElement from "./domElement";
+
+export default class Button extends DOMElement {
     constructor(x, y, text) {
-        this.element = document.createElement('button');
+        super("button");
         this.changePosition(x, y);
         this.changeText(text);
 
@@ -8,8 +10,7 @@ export default class Button {
     }
 
     handler() {
-        console.log("You Clicked Me!");
-        console.log(this.stage);
+
     }
 
     attachHandler() {
@@ -18,16 +19,11 @@ export default class Button {
     }
 
     changePosition(x, y) {
-        Object.assign(this.element.style,
+        this.applyStyles(
             {
                 position: "fixed",
                 top: `${y}px`,
                 left: `${x}px`
             });
-    }
-
-    changeText(text) {
-        this.text = text;
-        this.element.textContent = text;
     }
 }

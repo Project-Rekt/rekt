@@ -1,5 +1,5 @@
 import Engine from "engine";
-import BadButton from "./placeholderclasses/badButton";
+import Button from "./ui/button";
 
 export default class Player extends Engine.Actor {
   constructor(hp, currency) {
@@ -7,13 +7,14 @@ export default class Player extends Engine.Actor {
     this.currency = currency;
     this.hp = hp;
     this.towerSelect = null;
-    this.wallet = new BadButton(680, 425, "Wallet:");
-    this.lifeCounter = new BadButton(680, 350, "Life:");
+
+    this.wallet = new Button(680, 425, "Wallet:");
+    this.lifeCounter = new Button(680, 350, "Life:");
   }
 
   update = dt => {
-    this.wallet.text = "Wallet: " + this.currency;
-    this.lifeCounter.text = "Life: " + this.hp;
+    this.wallet.changeText("Wallet: " + this.currency);
+    this.lifeCounter.changeText("Life: " + this.hp);
   };
 
   //Function to add money.

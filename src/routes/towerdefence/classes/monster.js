@@ -1,8 +1,8 @@
 import Engine from "engine";
 import moveOverPath from "./movement";
-export default class Monster extends Engine.Actor {
-  constructor(hp, speed, def) {
-    super({ width: 50, height: 50 });
+export default class Monster extends Engine.SpriteActor {
+  constructor(hp, speed, def, spriteObj) {
+    super({ width: 50, height: 50 }, spriteObj);
     //this.route = this.edgePath(path);
     this.vertex = 0;
     this.hp = hp;

@@ -10,6 +10,7 @@ export default class HeavyTower extends Tower {
     this.range = 6;
     this.cost = 75;
     this.effect = new Effect("slow", "speed", 0.0001);
+
   }
 
   render = dt => {

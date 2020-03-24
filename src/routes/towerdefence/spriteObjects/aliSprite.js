@@ -3,7 +3,7 @@ export default {
   properties: {},
   states: {
     idle: {
-      location: "/" + require("../spriteAssets/towers/ali.png").default, //location of sprites
+      location: "/../spriteAssets/towers/ali.png", //location of sprites
       rps: 5, //refresh per second
       loop: true, //will continue to loop
       frames: [

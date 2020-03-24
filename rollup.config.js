@@ -5,6 +5,7 @@ import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import autopreprocess from 'svelte-preprocess';
 import babel from 'rollup-plugin-babel';
+import image from 'svelte-image';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -26,7 +27,7 @@ export default {
 			css: css => {
 				css.write('public/build/bundle.css');
 			},
-			preprocess: autopreprocess()
+			preprocess: [autopreprocess(), image()]
 		}),
 
 		// If you have external dependencies installed from

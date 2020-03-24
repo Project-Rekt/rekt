@@ -1,11 +1,9 @@
-import img from "../spriteAssets/students/weeb_walking.png";
-
 export default {
   name: "weeb-student",
   properties: {},
   states: {
     idle: {
-      location: "/" + img, //location of sprites
+      location: "http://localhost:5000/spriteAssets/students/weeb_walking.png", //location of sprites
       rps: 5, //refresh per second
       loop: true, //will continue to loop
       frames: [

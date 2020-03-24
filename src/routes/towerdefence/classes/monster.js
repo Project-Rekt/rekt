@@ -1,8 +1,8 @@
 import Engine from "engine";
 import moveOverPath from "./movement";
 export default class Monster extends Engine.SpriteActor {
-  constructor(hp, speed, def, spriteObj) {
-    super({ width: 50, height: 50 }, spriteObj);
+  constructor(bounds, hp, speed, def, spriteObj) {
+    super(bounds, spriteObj);
     //this.route = this.edgePath(path);
     this.vertex = 0;
     this.hp = hp;
@@ -24,7 +24,8 @@ export default class Monster extends Engine.SpriteActor {
     this.statRenew = { hp: this.hp, speed: this.speed, def: this.def };
   }
 
-  render = dt => {
+  render(dt) {
+    super.render(dt);
     //clearframe
     this.ctx.fillStyle = "black";
     this.ctx.fillRect(this.px, this.py, this.bounds.width, this.bounds.height);
@@ -72,7 +73,8 @@ export default class Monster extends Engine.SpriteActor {
     }
   }
 
-  update = dt => {
+  update(dt) {
+    //super.update(dt)
     //console.log("acting! " + this.getPosition() + " hp: " + this.getHp())
     //console.log(this.id + " acting")
     // if (this.effectsList != []) {
@@ -108,7 +110,9 @@ export default class Monster extends Engine.SpriteActor {
     this.bounds.y = this.positionY * 50;
   }
 
-  destroy = dt => {
+  
+  destroy(dt) {
+    super.destroy();
     //Clear boundingbox
     this.ctx.clearRect(this.x, this.y, this.width, this.height);
 

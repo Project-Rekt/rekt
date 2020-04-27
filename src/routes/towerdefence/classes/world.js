@@ -19,6 +19,11 @@ import TowerSelect from "./placeholderclasses/towerSelect";
 import WaveStart from "./placeholderclasses/waveStart";
 import menuBackground from "./placeholderclasses/menuBackground";
 import Weeb from "./weeb";
+import TowerSelect from "./ui/towerSelect";
+import WaveStart from "./ui/waveStart";
+
+import GUI from "../classes/ui/gui";
+import Notification from "../classes/ui/notification"
 
 export default class World extends Engine.Stage {
   constructor(elem) {
@@ -33,6 +38,8 @@ export default class World extends Engine.Stage {
     this.towers = [];
     this.buttons = [];
     //this.activeEnemies = []
+
+    this.gui = new GUI(document.querySelector('.ui'), this);
   }
 
   /*
@@ -98,10 +105,9 @@ export default class World extends Engine.Stage {
     this.tryAddNewTower(new LightTower(1, 3));
     this.tryAddNewTower(new HeavyTower(10, 4));
 
-    this.addActor(this.player.wallet, 40);
-    this.addActor(this.player.lifeCounter, 40);
+    this.gui.addInterface(this.player.wallet);
+    this.gui.addInterface(this.player.lifeCounter);
     this.addActor(this.player);
-    this.addActor(new menuBackground(), 0);
 
     //console.log(this.children)
 
@@ -112,13 +118,16 @@ export default class World extends Engine.Stage {
 
   createButtons() {
     let b = new TowerSelect(680, 100, "Light Tower", LightTower);
-    this.addActor(b);
+    //this.addActor(b);
+    this.gui.addInterface(b);
     this.buttons.push(b);
     b = new TowerSelect(680, 175, "Heavy Tower", HeavyTower);
-    this.addActor(b);
+    //this.addActor(b);
+    this.gui.addInterface(b);
     this.buttons.push(b);
     b = new WaveStart(680, 500, "Start Wave");
-    this.addActor(b);
+    this.gui.addInterface(b);
+    //this.addActor(b);
     this.buttons.push(b);
   }
 
@@ -297,13 +306,13 @@ export default class World extends Engine.Stage {
             //Tower(30, 1, "nearest", 3, x, y))){
             this.player.spendMoney(tower.cost);
           } else {
-            console.log("Can't block enemy path");
+            this.gui.addInterface(new Notification("Can't block enemy path"));
           }
         } else {
-          console.log("Need " + tower.cost + " money to buy turret");
+          this.gui.addInterface(new Notification("Need " + tower.cost + " money to buy turret"));
         }
       } else {
-        console.log("Select a tower to purchase");
+        this.gui.addInterface(new Notification("Select a tower to purchase"));
       }
     } else if (this.matrix[y][x] == 1) {
       let t = this.getTower(x, y);
@@ -314,7 +323,7 @@ export default class World extends Engine.Stage {
           this.upgradeTower(t);
           this.player.spendMoney(20);
         } else {
-          console.log("Need 20 money to upgrade a turret");
+          this.gui.addInterface(new Notification("Need 20 money to upgrade a turret"));
         }
       }
     }
@@ -356,7 +365,7 @@ export default class World extends Engine.Stage {
       mousedown: function() {
         let xy = stage.getMouseXYSector(this);
         if (!stage.isValidSector(xy)) {
-          stage.checkButtons(stage.getMouseXY(this));
+          //stage.checkButtons(stage.getMouseXY(this));
           return;
         }
         //console.log(xy[0] + ", " + xy[1])//this.getMouseXY())//this.input.x + ", " + this.input.y);

@@ -1,4 +1,5 @@
 import Engine from 'engine';
+import Monster from './monster';
 
 /*
  * spawn list in format of
@@ -107,6 +108,10 @@ export default class Spawner extends Engine.Actor {
         mob.setPath(this.path)
         //console.log(mob)
         this.stage.addActor(mob, 9)
+        if(mob instanceof Monster) {
+            console.log("YEAH BITCH")
+            mob.ctx = this.stage.fCanvas.getContext('2d')
+          }
         this.spawned.push(mob)
         //console.log(mob)
     }

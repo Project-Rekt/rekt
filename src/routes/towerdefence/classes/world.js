@@ -15,6 +15,7 @@ import Shop from "./shop";
 import LightTower from "./lightTower";
 import HeavyTower from "./heavyTower";
 
+import Weeb from "./weeb";
 import TowerSelect from "./ui/towerSelect";
 import WaveStart from "./ui/waveStart";
 
@@ -22,8 +23,9 @@ import GUI from "../classes/ui/gui";
 import Notification from "../classes/ui/notification"
 
 export default class World extends Engine.Stage {
-  constructor(elem) {
+  constructor(elem, fCanvas) {
     super(elem);
+    this.fCanvas = fCanvas;
     this.player = new Player(500, 200);
     this.shop = new Shop();
     this.spawners = [];
@@ -38,33 +40,31 @@ export default class World extends Engine.Stage {
     this.gui = new GUI(document.querySelector('.ui'), this);
   }
 
+  /*
+   *
+   * create map
+   * place static objects (nodes, spawners, endpoint, towers, walls)
+   */
+  createDemoWorld() {
+    this.matrix = [
+      [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0], //0
+      [0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0], //1
+      [0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0], //2
+      [0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0], //3
+      [0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0], //4
+      [0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0], //5
+      [1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1], //6
+      [0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0], //7
+      [0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0], //8
+      [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0], //9
+      [1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0], //10
+      [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 2] //11
+      //[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11]
+    ];
+    let waves = this.generateSpawnList(50, 3, 6, 25, 5, 0.005, 0, 2, 0.002);
+    console.log(waves.length + " waves");
 
-    /*
-     * 
-     * create map
-     * place static objects (nodes, spawners, endpoint, towers, walls)
-     */
-    createDemoWorld(){
-        this.matrix = [
-            [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0], //0
-            [0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0], //1
-            [0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0], //2
-            [0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0], //3
-            [0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0], //4
-            [0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0], //5
-            [1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1], //6
-            [0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0], //7
-            [0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0], //8
-            [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0], //9
-            [1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0], //10
-            [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 2], //11
-          //[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11]
-        ];
-        let waves = this.generateSpawnList(50, 3, 6, 25, 5, .005, 0, 2, .002)
-        console.log(waves.length + " waves")
-        
-        this.waveTimer = new WaveTimer()
-
+    this.waveTimer = new WaveTimer();
 
     this.waveTimer = new WaveTimer();
 
@@ -162,11 +162,13 @@ export default class World extends Engine.Stage {
       for (let j = 0; j < spawnerCount; j++) {
         let spawnList = [];
         for (let k = 0; k < enemyCount; k++) {
-          let monster = new Monster(
-            hp + hpScale * i,
-            speed + speedScale * i,
-            def
-          );
+          let monster = new Weeb({ x: 0, y: 0, width: 0, height: 0 });
+
+          // let monster = new Monster(
+          //   hp + hpScale * i,
+          //   speed + speedScale * i,
+          //   def
+          // );
           monster.id = id;
           id++;
           spawnList.push([gapTime * k, monster]);

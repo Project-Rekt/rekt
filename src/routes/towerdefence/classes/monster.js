@@ -24,8 +24,8 @@ export default class Monster extends Engine.SpriteActor {
     this.statRenew = { hp: this.hp, speed: this.speed, def: this.def };
   }
 
-  render(dt) {
-    super.render(dt);
+  /*
+  render = dt => {
     //clearframe
     this.ctx.fillStyle = "black";
     this.ctx.fillRect(this.px, this.py, this.bounds.width, this.bounds.height);
@@ -37,10 +37,10 @@ export default class Monster extends Engine.SpriteActor {
     let ratio = (this.hp / this.maxHp) * 255;
     let hexComponent = Math.floor(ratio).toString(16);
     //console.log(ratio + " " +hexComponent)
-    let colorString = "#00" + hexComponent + "30";
+    let colorString = "yellow";
     this.ctx.fillStyle = colorString;
     this.ctx.fillRect(this.px, this.py, this.bounds.width, this.bounds.height);
-  };
+  };*/
 
   renew(param) {
     console.log(this.statRenew);
@@ -73,20 +73,21 @@ export default class Monster extends Engine.SpriteActor {
     }
   }
 
-  update(dt) {
-    //super.update(dt)
+  update = dt => {
     //console.log("acting! " + this.getPosition() + " hp: " + this.getHp())
     //console.log(this.id + " acting")
     // if (this.effectsList != []) {
     //   console.log(this.effectsList);
     // }
     this.updateEffects(dt);
+    console.log(this.hp)
     if (this.isDead()) {
+     
       this.active = false;
       //console.log("Dead! " + this.getPosition() + " hp: " + this.getHp())
       //console.log(this)
       this.stage.enemyKilled();
-      this.destroy(dt);
+      this.destroy();
       return;
     }
 
@@ -98,7 +99,7 @@ export default class Monster extends Engine.SpriteActor {
       this.stage.enemyReachedGoal();
       //console.log("Reached goal! " + this.getPosition())
       //console.log(this)
-      this.destroy(dt);
+      this.destroy();
     }
   };
 
@@ -110,15 +111,9 @@ export default class Monster extends Engine.SpriteActor {
     this.bounds.y = this.positionY * 50;
   }
 
-  
-  destroy(dt) {
-    super.destroy();
-    //Clear boundingbox
-    this.ctx.clearRect(this.x, this.y, this.width, this.height);
-
-    //Remove actor from stage
-    this.stage.removeActor(this);
-  };
+  destroy() {
+    console.log("BITCH")
+  }
 
   hasReachedGoal() {
     this.reachedGoal = this.step + 1 >= this.path.length;
@@ -179,9 +174,7 @@ export default class Monster extends Engine.SpriteActor {
     return this.step;
   }
   isDead() {
-    this.dead = this.hp <= 0;
-    //console.log(this.hp <= 0)
-    return this.dead;
+    return this.hp <= 0
   }
 
   edgePath(path) {

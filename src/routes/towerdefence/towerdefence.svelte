@@ -1,10 +1,10 @@
 <script>
   import { onMount } from "svelte";
   import World from "./classes/world.js";
-  let canvas, uFPS, rFPS;
+  let canvas, uFPS, rFPS, fCanvas;
 
   onMount(() => {
-    let game = new World(canvas);
+    let game = new World(canvas, fCanvas);
     game.createDemoWorld()
     game.start();
     console.log("START")
@@ -19,11 +19,18 @@
   }
 
   
-  canvas {
+  .back {
     position: fixed;
     top: 0;
     left: 0;
     background-color: white;
+  }
+
+  .fore {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0);
   }
 
   .ui {
@@ -36,8 +43,14 @@
 </style>
 
 <canvas
+  class="back"
   width={window.innerWidth}
   height={window.innerHeight}
   bind:this={canvas} />
+  <canvas
+  class="fore"
+  width={window.innerWidth}
+  height={window.innerHeight}
+  bind:this={fCanvas} />
 <div class="ui"/>
 

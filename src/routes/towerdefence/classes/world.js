@@ -15,9 +15,6 @@ import Shop from "./shop";
 import LightTower from "./lightTower";
 import HeavyTower from "./heavyTower";
 
-import TowerSelect from "./placeholderclasses/towerSelect";
-import WaveStart from "./placeholderclasses/waveStart";
-import menuBackground from "./placeholderclasses/menuBackground";
 import Weeb from "./weeb";
 import TowerSelect from "./ui/towerSelect";
 import WaveStart from "./ui/waveStart";
@@ -26,8 +23,9 @@ import GUI from "../classes/ui/gui";
 import Notification from "../classes/ui/notification"
 
 export default class World extends Engine.Stage {
-  constructor(elem) {
+  constructor(elem, fCanvas) {
     super(elem);
+    this.fCanvas = fCanvas;
     this.player = new Player(500, 200);
     this.shop = new Shop();
     this.spawners = [];

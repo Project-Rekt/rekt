@@ -9,7 +9,7 @@ export default class HeavyTower extends Tower {
     this.atk = 15;
     this.range = 6;
     this.cost = 75;
-    this.effect = new Effect("slow", "speed", 0.0001);
+    this.effect = new Effect("slow", "speed", 0.000000001);
 
   }
 

@@ -1,7 +1,8 @@
-import monkey from "../../../spriteObjects/monkeySprite";
+import monkey from "../spriteObjects/monkeySprite";
+import Monster from "./monster";
 
-export default class Weeb extends Monster {
+export default class Monkey extends Monster {
   constructor(bounds) {
-    super(bounds, 10, 0.1, 3, monkey);
+    super(bounds, 4, 0.02, 2, monkey);
   }
 }

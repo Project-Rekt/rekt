@@ -3,7 +3,7 @@ export default {
   properties: {},
   states: {
     idle: {
-      location: "/" + require("../spriteAssets/students/rye_walking.png"), //location of sprites
+      location: "http://localhost:5000/spriteAssets/students/rye_walking.png", //location of sprites
       rps: 5, //refresh per second
       loop: true, //will continue to loop
       frames: [

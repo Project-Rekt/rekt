@@ -25,6 +25,15 @@ export default class Spawner extends Engine.Actor {
         this.spawned = [];
         this.startTime = 0.0;
         this.distance = 0
+        this.scaleFunction = null
+        this.scale = 1
+    }
+
+    setScaleFunction(func){
+        this.scaleFunction = func
+    }
+    updateScale(n){
+        this.scale = this.scaleFunction(n)
     }
 
     mobsExhausted(){
@@ -102,7 +111,10 @@ export default class Spawner extends Engine.Actor {
     /*
      * adds mob to world, sets coordinates to the spawner's, copies the path to the mob
      */
-    spawn(mob) {
+    spawn(mobType) {
+        console.log(mobType)
+        let mob = new mobType({ x: 0, y: 0, width: 0, height: 0 })
+        mob.scaleStats(this.scale)
         mob.updatePosition([this.positionY, this.positionX])
         mob.setDistance(this.distance)
         mob.setPath(this.path)

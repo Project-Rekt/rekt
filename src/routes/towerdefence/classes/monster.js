@@ -55,6 +55,12 @@ export default class Monster extends Engine.SpriteActor {
     }
   }
 
+  scaleStats(factor){
+    this.maxHp = this.maxHp * factor
+    this.hp = this.hp * factor
+    this.def = this.def * factor
+  }
+
   updateEffects(dt) {
     // console.log(JSON.stringify(this.effectsList));
     for (var i = 0; i < this.effectsList.length; i++) {
@@ -80,7 +86,7 @@ export default class Monster extends Engine.SpriteActor {
     //   console.log(this.effectsList);
     // }
     this.updateEffects(dt);
-    console.log(this.hp)
+    //console.log(this.hp)
     if (this.isDead()) {
      
       this.active = false;
@@ -131,12 +137,14 @@ export default class Monster extends Engine.SpriteActor {
 
   //Function to subtract health.
   takeDamage(damage) {
-    this.hp -= damage;
+    let temp = this.hp
+    this.hp = this.hp - Math.max(damage - this.def, 1);
+    //console.log(temp + " -> " + this.hp)
   }
 
   //Function to add health.
   healDamage(heal) {
-    this.hp += heal;
+    this.hp = this.hp + Math.min(this.hp + heal, this.maxHp);
   }
 
   //position given in [y, x] format

@@ -1,7 +1,8 @@
-import gril from "../../../spriteObjects/grillSprite";
+import gril from "../spriteObjects/grillSprite";
+import Monster from "./monster";
 
-export default class Weeb extends Monster {
+export default class Gril extends Monster {
   constructor(bounds) {
-    super(bounds, 20, 0.1, 1, gril);
+    super(bounds, 15, 0.005, .1, gril);
   }
 }

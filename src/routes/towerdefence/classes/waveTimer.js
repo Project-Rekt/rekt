@@ -5,7 +5,7 @@ export default class WaveTimer extends Engine.Actor{
     constructor(){
         super({})
         this.spawners = []
-        this.waveStep = 1
+        this.waveStep = 0
         this.waves = []
         this.enabled = false
     }
@@ -15,11 +15,11 @@ export default class WaveTimer extends Engine.Actor{
         if (!this.enabled){
             return
         }
-        if(this.waveStep > this.waves.length){
+        if(this.waveStep == this.waves.length){
             return
         }
         if (this.waveCompleted()){
-            this.stage.gui.addInterface(new Notification("starting wave " + this.waveStep))
+            this.stage.gui.addInterface(new Notification("starting wave " + (this.waveStep + 1)))
             console.log("starting wave " + this.waveStep)
             
             this.startWave()
@@ -31,14 +31,15 @@ export default class WaveTimer extends Engine.Actor{
     startWave(){
         
         for(let i = 0; i < this.spawners.length; i++){
-            this.spawners[i].setMobs(this.waves[this.waveStep-1][i])
+            this.spawners[i].setMobs(this.waves[this.waveStep][i])
+            this.spawners[i].updateScale(this.waveStep)
         }
         this.waveStep ++
     }
 
     setWaves(waves){
         this.waves = waves
-        this.waveStep = 1
+        this.waveStep = 0
     }
 
     setSpawners(spawners){

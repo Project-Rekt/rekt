@@ -1,7 +1,8 @@
-import norm from "../../../spriteObjects/ryeSprite";
+import norm from "../spriteObjects/ryeSprite";
+import Monster from "./monster";
 
-export default class Weeb extends Monster {
+export default class Normie extends Monster {
   constructor(bounds) {
-    super(bounds, 25, 0.001, 3, norm);
+    super(bounds, 5, 0.01, 7, norm);
   }
 }

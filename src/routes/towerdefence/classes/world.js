@@ -15,6 +15,9 @@ import Shop from "./shop";
 import LightTower from "./lightTower";
 import HeavyTower from "./heavyTower";
 
+import Monkey from "./monkey";
+import Gril from "./gril";
+import Normie from "./normie";
 import Weeb from "./weeb";
 import TowerSelect from "./ui/towerSelect";
 import WaveStart from "./ui/waveStart";
@@ -61,11 +64,9 @@ export default class World extends Engine.Stage {
       [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 2] //11
       //[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11]
     ];
-    let waves = this.generateSpawnList(50, 3, 6, 25, 5, 0.005, 0, 2, 0.002);
+    console.log(Monkey)
+    let waves = this.generateSpawnList(50, 3, 6, 1000, [Monkey, Normie, Gril, Weeb]);
     console.log(waves.length + " waves");
-
-    this.waveTimer = new WaveTimer();
-
     this.waveTimer = new WaveTimer();
 
     //add nodes(blue dots) and lines (white gridlines)
@@ -89,6 +90,9 @@ export default class World extends Engine.Stage {
     }
     this.addActor(new Background({ x: 0, y: 0, width: 600, height: 600 }), -1);
     this.spawners = [new Spawner(1, 1), new Spawner(6, 2), new Spawner(8, 5)];
+    for(let i = 0; i < this.spawners.length; i++){
+      this.spawners[i].setScaleFunction(this.simpleScale)
+    }
     this.pathSpawners();
 
     for (let i = 0; i < this.spawners.length; i++) {
@@ -135,13 +139,11 @@ export default class World extends Engine.Stage {
     }
   }
 
-  lineSpawn(startTime, gapTime, hp, speed, def, number) {
-    let list = [];
-    for (let i = 0; i < number; i++) {
-      list.push([startTime + gapTime * i, new Monster(hp, speed, def)]);
-    }
-    return list;
+
+  simpleScale(n){
+    return 1 + (1/5)*n
   }
+
 
   //generates spawn list with specifications, including base stats and the amount they scale by per turn
   generateSpawnList(
@@ -149,11 +151,7 @@ export default class World extends Engine.Stage {
     spawnerCount,
     enemyCount,
     gapTime,
-    hp,
-    speed,
-    def,
-    hpScale,
-    speedScale
+    spawnOptions
   ) {
     let waves = [];
     let id = 1;
@@ -161,17 +159,20 @@ export default class World extends Engine.Stage {
       let wave = [];
       for (let j = 0; j < spawnerCount; j++) {
         let spawnList = [];
+        let monsterType = spawnOptions[Math.floor(Math.random()*spawnOptions.length)]
+        //console.log(monsterType)
         for (let k = 0; k < enemyCount; k++) {
-          let monster = new Weeb({ x: 0, y: 0, width: 0, height: 0 });
+          //let monster = new Weeb({ x: 0, y: 0, width: 0, height: 0 });
 
           // let monster = new Monster(
           //   hp + hpScale * i,
           //   speed + speedScale * i,
           //   def
           // );
-          monster.id = id;
-          id++;
-          spawnList.push([gapTime * k, monster]);
+          //monster.id = id;
+          //id++;
+          //spawnList.push([gapTime * k, monster]);
+          spawnList.push([gapTime * k, monsterType])
         }
         wave.push(spawnList);
       }

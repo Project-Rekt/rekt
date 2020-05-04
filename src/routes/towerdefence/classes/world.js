@@ -397,8 +397,3 @@ export default class World extends Engine.Stage {
     return [handler.input.x, handler.input.y];
   }
 }
-/*
-let this = new World(document.querySelector('#main'));
-console.log("start")
-this.createDemoWorld()
-this.start();*/

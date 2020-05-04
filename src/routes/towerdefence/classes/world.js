@@ -24,6 +24,7 @@ import WaveStart from "./ui/waveStart";
 
 import GUI from "../classes/ui/gui";
 import Notification from "../classes/ui/notification"
+import TestMulti from "./ui/testMulti";
 
 export default class World extends Engine.Stage {
   constructor(elem, fCanvas) {
@@ -131,6 +132,9 @@ export default class World extends Engine.Stage {
     this.gui.addInterface(b);
     //this.addActor(b);
     this.buttons.push(b);
+
+    let testMulti = new TestMulti(600, 600, "TESTING TOOLTIP")
+    this.gui.addInterface(testMulti);
   }
 
   startWave() {

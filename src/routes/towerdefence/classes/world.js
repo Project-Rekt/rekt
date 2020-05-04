@@ -189,9 +189,9 @@ export default class World extends Engine.Stage {
     this.events++;
   }
 
-  enemyKilled() {
+  enemyKilled(bounty) {
     if (!this.player.isDead()) {
-      this.player.gainMoney(1);
+      this.player.gainMoney(bounty);
       //console.log("enemy killed! current money: " + this.player.getMoney())
     }
     this.events++;

@@ -22,6 +22,7 @@ export default class Monster extends Engine.SpriteActor {
     this.py = Math.round(this.bounds.y);
     this.effectsList = [];
     this.statRenew = { hp: this.hp, speed: this.speed, def: this.def };
+    this.bounty = 1
   }
 
   /*
@@ -59,6 +60,7 @@ export default class Monster extends Engine.SpriteActor {
     this.maxHp = this.maxHp * factor
     this.hp = this.hp * factor
     this.def = this.def * factor
+    this.bounty = Math.floor(this.bounty * factor)
   }
 
   updateEffects(dt) {
@@ -92,7 +94,7 @@ export default class Monster extends Engine.SpriteActor {
       this.active = false;
       //console.log("Dead! " + this.getPosition() + " hp: " + this.getHp())
       //console.log(this)
-      this.stage.enemyKilled();
+      this.stage.enemyKilled(this.bounty);
       this.destroy();
       return;
     }
@@ -118,7 +120,8 @@ export default class Monster extends Engine.SpriteActor {
   }
 
   destroy() {
-    console.log("BITCH")
+    //this.ctx.clearRect((this.x1 + this.x2)/2, (this.y1 + this.y2)/2, Math.abs(this.x2-this.x1), Math.abs(this.y2-this.y1));
+    this.stage.removeActor(this)
   }
 
   hasReachedGoal() {

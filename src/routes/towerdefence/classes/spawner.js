@@ -112,7 +112,7 @@ export default class Spawner extends Engine.Actor {
      * adds mob to world, sets coordinates to the spawner's, copies the path to the mob
      */
     spawn(mobType) {
-        console.log(mobType)
+        //console.log(mobType)
         let mob = new mobType({ x: 0, y: 0, width: 0, height: 0 })
         mob.scaleStats(this.scale)
         mob.updatePosition([this.positionY, this.positionX])
@@ -121,7 +121,7 @@ export default class Spawner extends Engine.Actor {
         //console.log(mob)
         this.stage.addActor(mob, 9)
         if(mob instanceof Monster) {
-            console.log("YEAH BITCH")
+            //console.log("YEAH BITCH")
             mob.ctx = this.stage.fCanvas.getContext('2d')
           }
         this.spawned.push(mob)

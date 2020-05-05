@@ -1,5 +1,6 @@
 import Engine from "engine";
 import Button from "./ui/button";
+import TestMulti from "./ui/testMulti";
 
 export default class Player extends Engine.Actor {
   constructor(hp, currency) {
@@ -8,13 +9,13 @@ export default class Player extends Engine.Actor {
     this.hp = hp;
     this.towerSelect = null;
 
-    this.wallet = new Button(680, 425, "Wallet:");
-    this.lifeCounter = new Button(680, 350, "Life:");
+    this.wallet = new TestMulti(153, 685, "Tears", "" + this.currency);
+    this.lifeCounter = new TestMulti(50, 685, "Life", "" + this.hp);
   }
 
   update = dt => {
-    this.wallet.changeText("Wallet: " + this.currency);
-    this.lifeCounter.changeText("Life: " + this.hp);
+    this.wallet.changeTipText("" + this.currency);
+    this.lifeCounter.changeTipText("" + this.hp);
   };
 
   //Function to add money.

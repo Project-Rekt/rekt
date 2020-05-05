@@ -25,6 +25,8 @@ import WaveStart from "./ui/waveStart";
 import GUI from "../classes/ui/gui";
 import Notification from "../classes/ui/notification"
 import TestMulti from "./ui/testMulti";
+import Image from './ui/image';
+import TowerSelectMenu from './ui/towerSelectMenu';
 
 export default class World extends Engine.Stage {
   constructor(elem, fCanvas) {
@@ -39,6 +41,7 @@ export default class World extends Engine.Stage {
     this.matrix = null;
     this.towers = [];
     this.buttons = [];
+    this.images = [];
     //this.activeEnemies = []
 
     this.gui = new GUI(document.querySelector('.ui'), this);
@@ -116,25 +119,38 @@ export default class World extends Engine.Stage {
 
     this.createInputhandler();
     this.createButtons();
+    this.createImages();
     //console.log(this.matrix)
   }
 
   createButtons() {
-    let b = new TowerSelect(680, 100, "Light Tower", LightTower);
+    //let b = new TowerSelect(680, 100, "Light Tower", LightTower);
     //this.addActor(b);
+    //this.gui.addInterface(b);
+    //this.buttons.push(b);
+    //b = new TowerSelect(680, 175, "Heavy Tower", HeavyTower);
+    //this.addActor(b);
+    //this.gui.addInterface(b);
+    //this.buttons.push(b);
+    let b = new TowerSelectMenu(680, 65, "Towers", ["Light Tower", "Heavy Tower"], [LightTower, HeavyTower])
     this.gui.addInterface(b);
     this.buttons.push(b);
-    b = new TowerSelect(680, 175, "Heavy Tower", HeavyTower);
-    //this.addActor(b);
-    this.gui.addInterface(b);
-    this.buttons.push(b);
-    b = new WaveStart(680, 500, "Start Wave");
+    b = new WaveStart(500, 635, "Start Wave");
     this.gui.addInterface(b);
     //this.addActor(b);
     this.buttons.push(b);
 
-    let testMulti = new TestMulti(600, 600, "TESTING TOOLTIP")
-    this.gui.addInterface(testMulti);
+    //let testMulti = new TestMulti(600, 600, "TESTING TOOLTIP", "Hi!")
+    //this.gui.addInterface(testMulti);
+  }
+
+  createImages() {
+    let i = new Image("/../spriteAssets/world/heart.png", 30, 605, 80, 80);
+    this.gui.addInterface(i);
+    this.images.push(i);
+    i = new Image("/../spriteAssets/world/tear.png", 140, 605, 80, 80);
+    this.gui.addInterface(i);
+    this.images.push(i);
   }
 
   startWave() {

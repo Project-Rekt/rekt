@@ -38,7 +38,7 @@ export default class World extends Engine.Stage {
     this.matrix = null;
     this.towers = [];
     this.buttons = [];
-    //this.activeEnemies = []
+    this.activeEnemies = []
 
     this.gui = new GUI(document.querySelector('.ui'), this);
   }
@@ -144,6 +144,19 @@ export default class World extends Engine.Stage {
     return 1 + (1/5)*n
   }
 
+  addActive(mob){
+    this.activeEnemies.push(mob)
+  }
+
+  removeActive(mob){
+    let index = this.activeEnemies.indexOf(mob)
+    console.log(index)
+    if (index > -1){
+      this.activeEnemies.splice(index, 1)
+    }
+  }
+
+
 
   //generates spawn list with specifications, including base stats and the amount they scale by per turn
   generateSpawnList(
@@ -204,6 +217,9 @@ export default class World extends Engine.Stage {
 
   //get all enemies currently in the world that is not dead or reached the end
   getActiveEnemies() {
+    //console.log(this.activeEnemies.length)
+    return this.activeEnemies
+    /* implementation outdated with changing z values
     let enemyLayerID = 9;
     let activeEnemies = [];
     let enemyLayer = this.children[enemyLayerID];
@@ -219,6 +235,7 @@ export default class World extends Engine.Stage {
       }
     }
     return activeEnemies;
+    */
   }
 
   //return true if it is possible to add a tower and add it

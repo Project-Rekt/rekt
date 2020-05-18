@@ -1,7 +1,11 @@
 <script>
   import { onMount } from "svelte";
   import World from "./classes/world.js";
+  import Sound from "./classes/util/audio.js"
   let canvas, uFPS, rFPS, fCanvas;
+  let bgMusic = new Sound("sounds/lan.mp3");
+  bgMusic.loop = true;
+  bgMusic.play();
 
   onMount(() => {
     let game = new World(canvas, fCanvas);

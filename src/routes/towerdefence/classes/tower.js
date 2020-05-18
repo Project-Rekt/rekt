@@ -1,5 +1,6 @@
 import Engine from "engine";
 import BulletLine from "./bulletLine";
+import Sound from "./util/audio";
 
 const targeting = Object.freeze({
   HIGH_HP: "highestHP",
@@ -26,6 +27,8 @@ export default class Tower extends Engine.Actor {
     this.cost;
     this.level = 1;
     this.effect = null;
+
+    this.sound = new Sound("sounds/shoot.mp3");
   }
 
   update = dt => {
@@ -61,6 +64,7 @@ export default class Tower extends Engine.Actor {
 
   shoot(time) {
     if (this.shotTimer >= this.atkspeed) {
+      this.sound.play();
       //console.log("shooting!")
       this.shotTimer -= this.atkspeed;
       this.fireBulletNoProjectile();

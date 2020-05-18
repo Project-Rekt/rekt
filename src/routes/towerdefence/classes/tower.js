@@ -1,3 +1,4 @@
+import TerrainBlocker from "./terrainBlocker"
 import Engine from "engine";
 import BulletLine from "./bulletLine";
 
@@ -8,18 +9,14 @@ const targeting = Object.freeze({
   FAR: "furthest"
 });
 
-export default class Tower extends Engine.Actor {
+export default class Tower extends TerrainBlocker {
   constructor(x, y) {
-    super({});
+    super({}, x, y, null);
 
     this.atkspeed;
     this.atk;
     this.targetingMode = targeting.NEAR;
     this.range;
-    this.positionX = x;
-    this.positionY = y;
-    this.realX = (x + 1) * 50 - 25;
-    this.realY = (y + 1) * 50 - 25;
     this.aimAngle = 0.0;
     this.target = null;
     this.shotTimer = 0;

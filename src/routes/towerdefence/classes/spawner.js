@@ -120,6 +120,7 @@ export default class Spawner extends Engine.Actor {
         mob.setPath(this.path)
         //console.log(mob)
         this.stage.addActor(mob, 9)
+        this.stage.addActive(mob)
         if(mob instanceof Monster) {
             //console.log("YEAH BITCH")
             mob.ctx = this.stage.fCanvas.getContext('2d')

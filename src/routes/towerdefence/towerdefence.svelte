@@ -4,7 +4,7 @@
   import Sound from "./classes/util/audio.js"
   let canvas, uFPS, rFPS, fCanvas;
   let bgMusic = new Sound("sounds/lan.mp3");
-  bgMusic.loop = true;
+  bgMusic.elem.loop = true;
   bgMusic.play();
 
   onMount(() => {

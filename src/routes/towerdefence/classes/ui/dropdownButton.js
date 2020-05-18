@@ -1,12 +1,11 @@
-import Button from './button'
-import TowerSelect from './towerSelect'
+import Button from './button';
 
-export default class TowerSelectMenu extends Button {
-    constructor(x, y, text, text_list, tower_list) {
+export default class DropdownMenu extends Button {
+    constructor(x, y, text, text_list) {
         super(x, y, text)
         this.subButtons = [];
-        for(let i = 0; i < tower_list.length; i++){
-            this.subButtons.push(new TowerSelect(x, y + (i+1) * 50, text_list[i], tower_list[i]));
+        for(let i = 0; i < text_list.length; i++){
+            this.subButtons.push(new Button(x, y + (i+1) * 50, text_list[i]));
             this.subButtons[i].applyStyles({
                 position: "fixed",
                 display: 'none'

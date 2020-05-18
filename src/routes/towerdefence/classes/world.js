@@ -27,6 +27,9 @@ import Notification from "../classes/ui/notification"
 import TestMulti from "./ui/testMulti";
 import Image from './ui/image';
 import TowerSelectMenu from './ui/towerSelectMenu';
+import Button from './ui/button';
+import DropdownButton from './ui/dropdownButton';
+import OptionsMenu from './ui/optionsMenu';
 
 export default class World extends Engine.Stage {
   constructor(elem, fCanvas) {
@@ -119,7 +122,7 @@ export default class World extends Engine.Stage {
 
     this.createInputhandler();
     this.createButtons();
-    this.createImages();
+    //this.createImages();
     //console.log(this.matrix)
   }
 
@@ -135,15 +138,22 @@ export default class World extends Engine.Stage {
     let b = new TowerSelectMenu(680, 65, "Towers", ["Light Tower", "Heavy Tower"], [LightTower, HeavyTower])
     this.gui.addInterface(b);
     this.buttons.push(b);
-    b = new WaveStart(500, 635, "Start Wave");
+    b = new WaveStart(680, 635, "Start Wave");
     this.gui.addInterface(b);
     //this.addActor(b);
     this.buttons.push(b);
-
     //let testMulti = new TestMulti(600, 600, "TESTING TOOLTIP", "Hi!")
     //this.gui.addInterface(testMulti);
+    b = new DropdownButton(680, 310, "Obstacles", ["1x1", "2x1", "2x2"]);
+    this.gui.addInterface(b);
+    this.buttons.push(b);
+    //b = new DropdownButton(420, 635, "Options", ["Resume", "Pause", "Restart", "Quit"])
+    b = new OptionsMenu(200, 635, "Options", ["Resume", "Pause", "Restart", "Quit", "Help"]);
+    this.gui.addInterface(b);
+    this.buttons.push(b);
   }
 
+/*
   createImages() {
     let i = new Image("/../spriteAssets/world/heart.png", 30, 605, 80, 80);
     this.gui.addInterface(i);
@@ -152,6 +162,7 @@ export default class World extends Engine.Stage {
     this.gui.addInterface(i);
     this.images.push(i);
   }
+*/
 
   startWave() {
     if (this.waveTimer.waveCompleted()) {

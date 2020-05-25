@@ -20,7 +20,7 @@ export default class Tower extends TerrainBlocker {
     this.aimAngle = 0.0;
     this.target = null;
     this.shotTimer = 0;
-    this.cost;
+
     this.level = 1;
     this.effect = null;
   }

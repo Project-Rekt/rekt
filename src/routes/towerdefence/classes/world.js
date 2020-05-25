@@ -24,12 +24,22 @@ import WaveStart from "./ui/waveStart";
 
 import GUI from "../classes/ui/gui";
 import Notification from "../classes/ui/notification"
+import TestMulti from "./ui/testMulti";
+import Image from './ui/image';
+import TowerSelectMenu from './ui/towerSelectMenu';
+import Button from './ui/button';
+import DropdownButton from './ui/dropdownButton';
+import OptionsMenu from './ui/optionsMenu';
+
+import SmallBlock from './smallBlock'
+import MediumBlock from './mediumBlock'
+import LargeBlock from './largeBlock'
 
 export default class World extends Engine.Stage {
   constructor(elem, fCanvas) {
     super(elem);
     this.fCanvas = fCanvas;
-    this.player = new Player(500, 200);
+    this.player = new Player(500, 500);
     this.shop = new Shop();
     this.spawners = [];
     this.waveTimer = null;
@@ -39,6 +49,7 @@ export default class World extends Engine.Stage {
     this.ownershipMatrix = null;
     this.towers = [];
     this.buttons = [];
+    this.images = [];
     this.activeEnemies = []
 
     this.gui = new GUI(document.querySelector('.ui'), this);
@@ -51,20 +62,23 @@ export default class World extends Engine.Stage {
    */
   createDemoWorld() {
     this.matrix = [
-      [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0], //0
-      [0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0], //1
-      [0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0], //2
-      [0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0], //3
-      [0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0], //4
-      [0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0], //5
-      [1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1], //6
-      [0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0], //7
-      [0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0], //8
+      [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], //0
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], //1
+      [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], //2
+      [0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0], //3
+      [0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0], //4
+      [0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0], //5
+      [0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1], //6
+      [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], //7
+      [0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], //8
       [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0], //9
-      [1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0], //10
-      [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 2] //11
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], //10
+      [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2] //11
       //[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11]
     ];
+
+    this.waveTimer = new WaveTimer();
+
     this.ownershipMatrix = []; //place walls and set ownership
     for(let i = 0; i < this.matrix.length; i++){
       let row = []
@@ -75,16 +89,33 @@ export default class World extends Engine.Stage {
           row.push(block)
           this.addActor(block, 5);
         }
+        else if(this.matrix[i][j] == 2){
+          let endpoint = new EndPoint(j, i)
+          row.push(endpoint)
+          this.addActor(endpoint, 8)
+        }
+        else if(this.matrix[i][j] == 3){
+          let spawner = new Spawner(j, i)
+          spawner.setScaleFunction(this.simpleScale)
+          row.push(spawner)
+          this.addActor(spawner, 8)
+          this.spawners.push(spawner)
+        }
         else{
           row.push(null)
         }
       }
       this.ownershipMatrix.push(row)
     }
-    console.log(Monkey)
-    let waves = this.generateSpawnList(50, 3, 6, 1000, [Monkey, Normie, Gril, Weeb]);
+    let waves = this.generateSpawnList(50, this.spawners.length, 6, 1000, [Monkey, Normie, Gril, Weeb]);
     console.log(waves.length + " waves");
-    this.waveTimer = new WaveTimer();
+
+
+    this.pathSpawners();
+    this.waveTimer.setSpawners(this.spawners);
+    this.waveTimer.setWaves(waves);
+    this.addActor(this.waveTimer, 0);
+
 
     //add nodes(blue dots) and lines (white gridlines)
     for (let i = 0; i <= 600; i += 50) {
@@ -99,21 +130,11 @@ export default class World extends Engine.Stage {
     }
     
     this.addActor(new Background({ x: 0, y: 0, width: 600, height: 600 }), -1);
-    this.spawners = [new Spawner(1, 1), new Spawner(6, 2), new Spawner(8, 5)];
-    for(let i = 0; i < this.spawners.length; i++){
-      this.spawners[i].setScaleFunction(this.simpleScale)
-    }
-    this.pathSpawners();
+    //this.spawners = [new Spawner(1, 1), new Spawner(6, 2), new Spawner(8, 5)];
+    
+    
 
-    for (let i = 0; i < this.spawners.length; i++) {
-      this.addActor(this.spawners[i], 8);
-    }
-    this.waveTimer.setSpawners(this.spawners);
-    this.waveTimer.setWaves(waves);
-
-    this.addActor(this.waveTimer, 0);
-
-    this.addActor(new EndPoint(11, 11), 100);
+    //this.addActor(new EndPoint(11, 11), 100);
     this.tryAddNewTerrainBlocker(new LightTower(1, 3));
     this.tryAddNewTerrainBlocker(new HeavyTower(10, 4));
 
@@ -125,6 +146,7 @@ export default class World extends Engine.Stage {
 
     this.createInputhandler();
     this.createButtons();
+    //this.createImages();
     //console.log(this.matrix)
   }
 
@@ -133,19 +155,48 @@ export default class World extends Engine.Stage {
   }
 
   createButtons() {
-    let b = new TowerSelect(680, 100, "Light Tower", LightTower);
+    //let b = new TowerSelect(680, 100, "Light Tower", LightTower);
     //this.addActor(b);
+    //this.gui.addInterface(b);
+    //this.buttons.push(b);
+    //b = new TowerSelect(680, 175, "Heavy Tower", HeavyTower);
+    //this.addActor(b);
+    //this.gui.addInterface(b);
+    //this.buttons.push(b);
+    let b = new TowerSelectMenu(680, 65, "Towers", ["Light Tower", "Heavy Tower"], [LightTower, HeavyTower])
     this.gui.addInterface(b);
     this.buttons.push(b);
-    b = new TowerSelect(680, 175, "Heavy Tower", HeavyTower);
+    b = new WaveStart(680, 635, "Start Wave");
+    this.gui.addInterface(b);
     //this.addActor(b);
+    this.buttons.push(b);
+    //let testMulti = new TestMulti(600, 600, "TESTING TOOLTIP", "Hi!")
+    //this.gui.addInterface(testMulti);
+    b = new TowerSelectMenu(680, 310, "Obstacles", ["Small", "Medium", "Large"], [SmallBlock, MediumBlock, LargeBlock])
     this.gui.addInterface(b);
     this.buttons.push(b);
-    b = new WaveStart(680, 500, "Start Wave");
+    /*
+    b = new DropdownButton(680, 310, "Obstacles", ["1x1", "2x1", "2x2"]);
     this.gui.addInterface(b);
-    //this.addActor(b);
+    this.buttons.push(b);
+    */
+
+    //b = new DropdownButton(420, 635, "Options", ["Resume", "Pause", "Restart", "Quit"])
+    b = new OptionsMenu(200, 635, "Options", ["Resume", "Pause", "Restart", "Quit", "Help"]);
+    this.gui.addInterface(b);
     this.buttons.push(b);
   }
+
+/*
+  createImages() {
+    let i = new Image("/../spriteAssets/world/heart.png", 30, 605, 80, 80);
+    this.gui.addInterface(i);
+    this.images.push(i);
+    i = new Image("/../spriteAssets/world/tear.png", 140, 605, 80, 80);
+    this.gui.addInterface(i);
+    this.images.push(i);
+  }
+*/
 
   startWave() {
     if (this.waveTimer.waveCompleted()) {
@@ -355,13 +406,14 @@ export default class World extends Engine.Stage {
    * 1 will only activate if all enemies are dead
    */
   playerInteract(x, y) {
+    //console.log(this.ownershipMatrix)
     if (this.matrix[y][x] == 0 && this.waveTimer.waveCompleted()) {
-      let b = this.player.towerSelect == null;
+      let b = this.player.blockerSelect == null;
       //console.log(b)
       if (!b) {
-        let tower = new this.player.towerSelect(x, y);
+        let tower = new this.player.blockerSelect(x, y);
         if (this.player.getMoney() >= tower.cost) {
-          if (this.tryAddNewTerrainBlocker(new this.player.towerSelect(x, y))) {
+          if (this.tryAddNewTerrainBlocker(tower)) {
             //Tower(30, 1, "nearest", 3, x, y))){
             this.player.spendMoney(tower.cost);
           } else {
@@ -435,7 +487,12 @@ export default class World extends Engine.Stage {
     inp.startHandler();
   }
   selectBuyTower(tower) {
-    this.player.towerSelect = tower;
+    this.selectBuyBlocker(tower)
+  }
+
+  selectBuyBlocker(blocker){
+    console.log(blocker)
+    this.player.blockerSelect = blocker
   }
 
   //return if indices are in bounds of map
@@ -457,8 +514,3 @@ export default class World extends Engine.Stage {
     return [handler.input.x, handler.input.y];
   }
 }
-/*
-let this = new World(document.querySelector('#main'));
-console.log("start")
-this.createDemoWorld()
-this.start();*/

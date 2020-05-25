@@ -339,12 +339,13 @@ export default class World extends Engine.Stage {
     for(let i = 0; i < blockage.length; i++){ //place all 1's from blockage into test matrix
       for (let j = 0; j < blockage[0].length; j++){
         if (blockage[i][j] == 0){ //no blockage to add
-          break;
+          continue;
         }
         if (blockage[i][j] == 1 && testMatrix[i+y][j+x] == 0){
           testMatrix[i+y][j+x] = 1; //blockage can fit
-          break;
+          continue;
         }
+        //console.log("false")
         return false; //blockage does not fit here
       }
     }
@@ -406,7 +407,6 @@ export default class World extends Engine.Stage {
    * 1 will only activate if all enemies are dead
    */
   playerInteract(x, y) {
-    //console.log(this.ownershipMatrix)
     if (this.matrix[y][x] == 0 && this.waveTimer.waveCompleted()) {
       let b = this.player.blockerSelect == null;
       //console.log(b)

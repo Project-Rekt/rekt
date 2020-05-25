@@ -407,7 +407,6 @@ export default class World extends Engine.Stage {
    * 1 will only activate if all enemies are dead
    */
   playerInteract(x, y) {
-    console.log(this.ownershipMatrix)
     if (this.matrix[y][x] == 0 && this.waveTimer.waveCompleted()) {
       let b = this.player.blockerSelect == null;
       //console.log(b)

@@ -1,5 +1,5 @@
 import Engine from "engine";
-import Button from "./ui/button";
+import ImageHoverText from "./ui/imageHoverText"
 
 export default class Player extends Engine.Actor {
   constructor(hp, currency) {
@@ -8,13 +8,13 @@ export default class Player extends Engine.Actor {
     this.hp = hp;
     this.towerSelect = null;
 
-    this.wallet = new Button(680, 425, "Wallet:");
-    this.lifeCounter = new Button(680, 350, "Life:");
+    this.wallet = new ImageHoverText("../spriteAssets/world/tear.png", 100, 600, 80, 80, "" + this.currency);
+    this.lifeCounter = new ImageHoverText("../spriteAssets/world/heart.png", 5, 600, 80, 80, "" + this.hp);
   }
 
   update = dt => {
-    this.wallet.changeText("Wallet: " + this.currency);
-    this.lifeCounter.changeText("Life: " + this.hp);
+    this.wallet.changeAltText("" + this.currency);
+    this.lifeCounter.changeAltText("" + this.hp);
   };
 
   //Function to add money.

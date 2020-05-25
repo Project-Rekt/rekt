@@ -24,6 +24,12 @@ import WaveStart from "./ui/waveStart";
 
 import GUI from "../classes/ui/gui";
 import Notification from "../classes/ui/notification"
+import TestMulti from "./ui/testMulti";
+import Image from './ui/image';
+import TowerSelectMenu from './ui/towerSelectMenu';
+import Button from './ui/button';
+import DropdownButton from './ui/dropdownButton';
+import OptionsMenu from './ui/optionsMenu';
 
 export default class World extends Engine.Stage {
   constructor(elem, fCanvas) {
@@ -39,6 +45,7 @@ export default class World extends Engine.Stage {
     this.ownershipMatrix = null;
     this.towers = [];
     this.buttons = [];
+    this.images = [];
     this.activeEnemies = []
 
     this.gui = new GUI(document.querySelector('.ui'), this);
@@ -125,6 +132,7 @@ export default class World extends Engine.Stage {
 
     this.createInputhandler();
     this.createButtons();
+    //this.createImages();
     //console.log(this.matrix)
   }
 
@@ -133,19 +141,42 @@ export default class World extends Engine.Stage {
   }
 
   createButtons() {
-    let b = new TowerSelect(680, 100, "Light Tower", LightTower);
+    //let b = new TowerSelect(680, 100, "Light Tower", LightTower);
     //this.addActor(b);
+    //this.gui.addInterface(b);
+    //this.buttons.push(b);
+    //b = new TowerSelect(680, 175, "Heavy Tower", HeavyTower);
+    //this.addActor(b);
+    //this.gui.addInterface(b);
+    //this.buttons.push(b);
+    let b = new TowerSelectMenu(680, 65, "Towers", ["Light Tower", "Heavy Tower"], [LightTower, HeavyTower])
     this.gui.addInterface(b);
     this.buttons.push(b);
-    b = new TowerSelect(680, 175, "Heavy Tower", HeavyTower);
+    b = new WaveStart(680, 635, "Start Wave");
+    this.gui.addInterface(b);
     //this.addActor(b);
+    this.buttons.push(b);
+    //let testMulti = new TestMulti(600, 600, "TESTING TOOLTIP", "Hi!")
+    //this.gui.addInterface(testMulti);
+    b = new DropdownButton(680, 310, "Obstacles", ["1x1", "2x1", "2x2"]);
     this.gui.addInterface(b);
     this.buttons.push(b);
-    b = new WaveStart(680, 500, "Start Wave");
+    //b = new DropdownButton(420, 635, "Options", ["Resume", "Pause", "Restart", "Quit"])
+    b = new OptionsMenu(200, 635, "Options", ["Resume", "Pause", "Restart", "Quit", "Help"]);
     this.gui.addInterface(b);
-    //this.addActor(b);
     this.buttons.push(b);
   }
+
+/*
+  createImages() {
+    let i = new Image("/../spriteAssets/world/heart.png", 30, 605, 80, 80);
+    this.gui.addInterface(i);
+    this.images.push(i);
+    i = new Image("/../spriteAssets/world/tear.png", 140, 605, 80, 80);
+    this.gui.addInterface(i);
+    this.images.push(i);
+  }
+*/
 
   startWave() {
     if (this.waveTimer.waveCompleted()) {
@@ -457,8 +488,3 @@ export default class World extends Engine.Stage {
     return [handler.input.x, handler.input.y];
   }
 }
-/*
-let this = new World(document.querySelector('#main'));
-console.log("start")
-this.createDemoWorld()
-this.start();*/

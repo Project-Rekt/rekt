@@ -8,6 +8,11 @@ export default class GUI {
         this.element.appendChild(inter.element);
         inter.stage = this.stage;
         inter.gui = this;
+
+        //call create function this happens with stage and gui refs
+        if(inter.create) {
+            inter.create();
+        }
     }
 
     removeInterface(inter) {

@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "file": "bundle.css",
+  "sources": [
+    "..\\..\\towerdefence.svelte"
+  ],
+  "sourcesContent": [
+    "<script>\r\n  import { onMount } from \"svelte\";\r\n  import World from \"./classes/world.js\";\r\n  let canvas, uFPS, rFPS, fCanvas;\r\n\r\n  onMount(() => {\r\n    let game = new World(canvas, fCanvas);\r\n    game.createDemoWorld()\r\n    game.start();\r\n    console.log(\"START\")\r\n  });\r\n</script>\r\n\r\n<style>\r\n  * {\r\n    color: cyan;\r\n    font-family: Arial, Helvetica, sans-serif;\r\n    font-weight: 100;\r\n  }\r\n\r\n  \r\n  .back {\r\n    position: fixed;\r\n    top: 0;\r\n    left: 0;\r\n    background-color: white;\r\n  }\r\n\r\n  .fore {\r\n    position: fixed;\r\n    top: 0;\r\n    left: 0;\r\n    background-color: rgba(0, 0, 0, 0);\r\n  }\r\n\r\n  .ui {\r\n    position: fixed;\r\n    top: 0;\r\n    left: 0;\r\n    width: 100vw;\r\n    height: 100vh;\r\n  }\r\n</style>\r\n\r\n<canvas\r\n  class=\"back\"\r\n  width={window.innerWidth}\r\n  height={window.innerHeight}\r\n  bind:this={canvas} />\r\n  <canvas\r\n  class=\"fore\"\r\n  width={window.innerWidth}\r\n  height={window.innerHeight}\r\n  bind:this={fCanvas} />\r\n<div class=\"ui\"/>\r\n\r\n"
+  ],
+  "names": [],
+  "mappings": "AAcE,cAAE,CAAC,AACD,KAAK,CAAE,IAAI,CACX,WAAW,CAAE,KAAK,CAAC,CAAC,SAAS,CAAC,CAAC,UAAU,CACzC,WAAW,CAAE,GAAG,AAClB,CAAC,AAGD,KAAK,cAAC,CAAC,AACL,QAAQ,CAAE,KAAK,CACf,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,gBAAgB,CAAE,KAAK,AACzB,CAAC,AAED,KAAK,cAAC,CAAC,AACL,QAAQ,CAAE,KAAK,CACf,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,gBAAgB,CAAE,KAAK,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,AACpC,CAAC,AAED,GAAG,cAAC,CAAC,AACH,QAAQ,CAAE,KAAK,CACf,GAAG,CAAE,CAAC,CACN,IAAI,CAAE,CAAC,CACP,KAAK,CAAE,KAAK,CACZ,MAAM,CAAE,KAAK,AACf,CAAC"
+}

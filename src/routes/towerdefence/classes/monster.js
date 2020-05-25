@@ -128,7 +128,12 @@ export default class Monster extends Engine.SpriteActor {
   }
 
   destroyActor(){
-    this.ctx.clearRect((this.x1 + this.x2)/2, (this.y1 + this.y2)/2, Math.abs(this.x2-this.x1), Math.abs(this.y2-this.y1));
+    this.ctx.clearRect(
+      this.px,
+      this.py,
+      this.bounds.width * this.scale,
+      this.bounds.height * this.scale
+  )
     this.stage.removeActor(this)
     this.stage.removeActive(this)
   }

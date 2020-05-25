@@ -6,7 +6,7 @@ export default class Player extends Engine.Actor {
     super({});
     this.currency = currency;
     this.hp = hp;
-    this.towerSelect = null;
+    this.blockerSelect = null;
 
     this.wallet = new ImageHoverText("../spriteAssets/world/tear.png", 100, 600, 80, 80, "" + this.currency);
     this.lifeCounter = new ImageHoverText("../spriteAssets/world/heart.png", 5, 600, 80, 80, "" + this.hp);

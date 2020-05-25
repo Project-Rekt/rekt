@@ -12,6 +12,7 @@ export default class TerrainBlocker extends Engine.Actor{
         this.positionY = y;
         this.realX = (x + 1) * 50 - 25;
         this.realY = (y + 1) * 50 - 25;
+        this.cost = 0;
     }
 
     getSpace(){

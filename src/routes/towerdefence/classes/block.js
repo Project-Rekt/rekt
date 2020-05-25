@@ -1,11 +1,8 @@
 import Engine from 'engine';
-export default class Block extends Engine.Actor {
+import TerrainBlocker from './terrainBlocker';
+export default class Block extends TerrainBlocker {
     constructor(x, y) {
-        super({});
-        this.x = x;
-        this.y = y;
-        this.realX = (x+1) * 50 - 25;
-        this.realY = (y+1) * 50 - 25;
+        super({}, x, y, null);
     }
 
     render = (dt) => {

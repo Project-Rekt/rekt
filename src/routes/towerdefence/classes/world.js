@@ -42,10 +42,11 @@ export default class World extends Engine.Stage {
     this.pather = null;
     this.events = 0;
     this.matrix = null;
+    this.ownershipMatrix = null;
     this.towers = [];
     this.buttons = [];
     this.images = [];
-    //this.activeEnemies = []
+    this.activeEnemies = []
 
     this.gui = new GUI(document.querySelector('.ui'), this);
   }
@@ -71,6 +72,22 @@ export default class World extends Engine.Stage {
       [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 2] //11
       //[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11]
     ];
+    this.ownershipMatrix = []; //place walls and set ownership
+    for(let i = 0; i < this.matrix.length; i++){
+      let row = []
+      for(let j = 0; j < this.matrix[0].length; j++){
+        if (this.matrix[i][j] == 1) {
+          let block = new Block(j, i)
+          this.tryAddNewTerrainBlocker(block)
+          row.push(block)
+          this.addActor(block, 5);
+        }
+        else{
+          row.push(null)
+        }
+      }
+      this.ownershipMatrix.push(row)
+    }
     console.log(Monkey)
     let waves = this.generateSpawnList(50, 3, 6, 1000, [Monkey, Normie, Gril, Weeb]);
     console.log(waves.length + " waves");
@@ -87,14 +104,7 @@ export default class World extends Engine.Stage {
       this.addActor(new Line({ x: i, y: 0, width: 1, height: 600 }), 22);
       this.addActor(new Line({ x: 0, y: i, width: 600, height: 1 }), 22);
     }
-    //add obstacles
-    for (let i = 0; i < this.matrix.length; i++) {
-      for (let j = 0; j < this.matrix[0].length; j++) {
-        if (this.matrix[i][j] == 1) {
-          this.addActor(new Block(j, i), 5);
-        }
-      }
-    }
+    
     this.addActor(new Background({ x: 0, y: 0, width: 600, height: 600 }), -1);
     this.spawners = [new Spawner(1, 1), new Spawner(6, 2), new Spawner(8, 5)];
     for(let i = 0; i < this.spawners.length; i++){
@@ -111,8 +121,8 @@ export default class World extends Engine.Stage {
     this.addActor(this.waveTimer, 0);
 
     this.addActor(new EndPoint(11, 11), 100);
-    this.tryAddNewTower(new LightTower(1, 3));
-    this.tryAddNewTower(new HeavyTower(10, 4));
+    this.tryAddNewTerrainBlocker(new LightTower(1, 3));
+    this.tryAddNewTerrainBlocker(new HeavyTower(10, 4));
 
     this.gui.addInterface(this.player.wallet);
     this.gui.addInterface(this.player.lifeCounter);
@@ -124,6 +134,10 @@ export default class World extends Engine.Stage {
     this.createButtons();
     //this.createImages();
     //console.log(this.matrix)
+  }
+
+  blockIsAvailable(x, y){
+    return this.matrix[y][x] == 0 && this.ownershipMatrix[y][x] == null
   }
 
   createButtons() {
@@ -175,6 +189,19 @@ export default class World extends Engine.Stage {
     return 1 + (1/5)*n
   }
 
+  addActive(mob){
+    this.activeEnemies.push(mob)
+  }
+
+  removeActive(mob){
+    let index = this.activeEnemies.indexOf(mob)
+    console.log(index)
+    if (index > -1){
+      this.activeEnemies.splice(index, 1)
+    }
+  }
+
+
 
   //generates spawn list with specifications, including base stats and the amount they scale by per turn
   generateSpawnList(
@@ -220,9 +247,9 @@ export default class World extends Engine.Stage {
     this.events++;
   }
 
-  enemyKilled() {
+  enemyKilled(bounty) {
     if (!this.player.isDead()) {
-      this.player.gainMoney(1);
+      this.player.gainMoney(bounty);
       //console.log("enemy killed! current money: " + this.player.getMoney())
     }
     this.events++;
@@ -235,6 +262,9 @@ export default class World extends Engine.Stage {
 
   //get all enemies currently in the world that is not dead or reached the end
   getActiveEnemies() {
+    //console.log(this.activeEnemies.length)
+    return this.activeEnemies
+    /* implementation outdated with changing z values
     let enemyLayerID = 9;
     let activeEnemies = [];
     let enemyLayer = this.children[enemyLayerID];
@@ -250,27 +280,56 @@ export default class World extends Engine.Stage {
       }
     }
     return activeEnemies;
+    */
   }
 
-  //return true if it is possible to add a tower and add it
+  //return true if it is possible to add a terrain blocker and add it
   //does not check money
-  tryAddNewTower(tower) {
-    //if (this.matrix[tower.positionY][tower.positionX] == 0){
-    if (this.probeNewBlockage(tower.positionX, tower.positionY)) {
-      this.addActor(tower, 10);
-      this.towers.push(tower);
-      this.matrix[tower.positionY][tower.positionX] = 1;
-      this.pathSpawners();
-      return true;
+  //in theory terrain blocker can be of any size and combination of blocked cells
+  tryAddNewTerrainBlocker(blocker){
+    let x = blocker.positionX;
+    let y = blocker.positionY;
+    let space = blocker.getSpace();
+   if (!this.probeMassBlockage(x, y, space))
+   {
+      return false;
+   }
+   this.addActor(blocker, 10);
+   if(blocker instanceof Tower){
+     this.towers.push(blocker);
+   }
+   for(let i = 0; i < space.length; i++){
+     for(let j = 0; j < space[0].length; j++){
+      this.matrix[y + i][x + j] = 1;
+      this.ownershipMatrix[y + i][x + j] = blocker;
+     }
     }
-    return false;
+    this.pathSpawners();
+    return true;
   }
 
-  //return if adding a blockage at x y in the matrix will result in all spawners able to find an end
-  probeNewBlockage(x, y) {
+
+  //return true if adding all the blocked cells starting from xy as top left corner will result in all spawners able to find the end 
+  probeMassBlockage(x, y, blockage){
+    if (y + blockage.length > this.matrix.length || x + blockage[0].length > this.matrix[0].length){
+      return false //blockage results in out of bounds
+    }
+
     let testMatrix = this.cloneMatrix(this.matrix);
-    testMatrix[y][x] = 1;
-    let pather = new Pather();
+    for(let i = 0; i < blockage.length; i++){ //place all 1's from blockage into test matrix
+      for (let j = 0; j < blockage[0].length; j++){
+        if (blockage[i][j] == 0){ //no blockage to add
+          break;
+        }
+        if (blockage[i][j] == 1 && testMatrix[i+y][j+x] == 0){
+          testMatrix[i+y][j+x] = 1; //blockage can fit
+          break;
+        }
+        return false; //blockage does not fit here
+      }
+    }
+
+    let pather = new Pather(); //test all spawners
     pather.initializeGraph(testMatrix);
     //console.log(testMatrix)
     for (let i = 0; i < this.spawners.length; i++) {
@@ -287,6 +346,7 @@ export default class World extends Engine.Stage {
     }
     return true;
   }
+
 
   cloneMatrix(matrix) {
     let m2 = [];
@@ -332,7 +392,7 @@ export default class World extends Engine.Stage {
       if (!b) {
         let tower = new this.player.towerSelect(x, y);
         if (this.player.getMoney() >= tower.cost) {
-          if (this.tryAddNewTower(new this.player.towerSelect(x, y))) {
+          if (this.tryAddNewTerrainBlocker(new this.player.towerSelect(x, y))) {
             //Tower(30, 1, "nearest", 3, x, y))){
             this.player.spendMoney(tower.cost);
           } else {

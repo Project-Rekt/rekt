@@ -22,6 +22,7 @@ export default class Monster extends Engine.SpriteActor {
     this.py = Math.round(this.bounds.y);
     this.effectsList = [];
     this.statRenew = { hp: this.hp, speed: this.speed, def: this.def };
+    this.bounty = 1
   }
 
   /*
@@ -59,6 +60,7 @@ export default class Monster extends Engine.SpriteActor {
     this.maxHp = this.maxHp * factor
     this.hp = this.hp * factor
     this.def = this.def * factor
+    this.bounty = Math.floor(this.bounty * factor)
   }
 
   updateEffects(dt) {
@@ -79,6 +81,13 @@ export default class Monster extends Engine.SpriteActor {
     }
   }
 
+  updateZIndex(){
+    //600 max y
+    let newZ = 9 + (this.positionY/600)
+    //console.log(newZ)
+    this.stage.changeIndex(this, newZ)
+  }
+
   update = dt => {
     //console.log("acting! " + this.getPosition() + " hp: " + this.getHp())
     //console.log(this.id + " acting")
@@ -92,12 +101,13 @@ export default class Monster extends Engine.SpriteActor {
       this.active = false;
       //console.log("Dead! " + this.getPosition() + " hp: " + this.getHp())
       //console.log(this)
-      this.stage.enemyKilled();
-      this.destroy();
+      this.stage.enemyKilled(this.bounty);
+      this.destroyActor();
       return;
     }
 
     moveOverPath(this, dt);
+    this.updateZIndex()
     //this.distance -= this.speed*dt
     this.updateRealPosition();
     if (this.hasReachedGoal()) {
@@ -105,7 +115,7 @@ export default class Monster extends Engine.SpriteActor {
       this.stage.enemyReachedGoal();
       //console.log("Reached goal! " + this.getPosition())
       //console.log(this)
-      this.destroy();
+      this.destroyActor();
     }
   };
 
@@ -117,10 +127,19 @@ export default class Monster extends Engine.SpriteActor {
     this.bounds.y = this.positionY * 50;
   }
 
-  destroy() {
-    console.log("BITCH")
+  destroyActor(){
+    this.ctx.clearRect((this.x1 + this.x2)/2, (this.y1 + this.y2)/2, Math.abs(this.x2-this.x1), Math.abs(this.y2-this.y1));
+    this.stage.removeActor(this)
+    this.stage.removeActive(this)
   }
-
+  /*
+  destroy() { //not working???
+    //this.ctx.clearRect((this.x1 + this.x2)/2, (this.y1 + this.y2)/2, Math.abs(this.x2-this.x1), Math.abs(this.y2-this.y1));
+    console.log("!!!")
+    this.stage.removeActor(this)
+    this.stage.removeActive(this)
+  }
+  */
   hasReachedGoal() {
     this.reachedGoal = this.step + 1 >= this.path.length;
     return this.reachedGoal;

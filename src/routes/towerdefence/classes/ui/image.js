@@ -6,11 +6,14 @@ export default class Image extends DOMElement {
         this.element.src = image;
         this.changePosition(x, y);
         this.changeSize(width, height);
-        this.element.style.zIndex = "-1";
+        //this.element.style.zIndex = "-1";
+
+        this.attachHandler = this.attachHandler.bind(this);
+        this.attachHandler();
     }
 
     handler_onHover() {
-
+        console.log("LOOOL")
     }
 
     handler_onExit() {

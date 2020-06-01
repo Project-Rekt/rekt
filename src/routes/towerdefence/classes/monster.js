@@ -1,5 +1,13 @@
 import Engine from "engine";
 import moveOverPath from "./movement";
+
+const direction = Object.freeze({
+  NORTH: "North",
+  EAST: "East",
+  SOUTH: "South",
+  WEST: "West"
+});
+
 export default class Monster extends Engine.SpriteActor {
   constructor(bounds, hp, speed, def, spriteObj) {
     super(bounds, spriteObj);
@@ -23,6 +31,7 @@ export default class Monster extends Engine.SpriteActor {
     this.effectsList = [];
     this.statRenew = { hp: this.hp, speed: this.speed, def: this.def };
     this.bounty = 1
+    this.orientation = direction.SOUTH
   }
 
   /*
@@ -94,6 +103,7 @@ export default class Monster extends Engine.SpriteActor {
     // if (this.effectsList != []) {
     //   console.log(this.effectsList);
     // }
+    //console.log(this.orientation)
     this.updateEffects(dt);
     //console.log(this.hp)
     if (this.isDead()) {

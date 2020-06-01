@@ -1,3 +1,12 @@
+
+
+const direction = Object.freeze({
+    NORTH: "North",
+    EAST: "East",
+    SOUTH: "South",
+    WEST: "West"
+  });
+
 export default function moveOverPath(mob, time){
     if (time == 0 || mob.hasReachedGoal()){
         return
@@ -20,6 +29,7 @@ export default function moveOverPath(mob, time){
         moveOverPath(mob, newTime)
         return
     }
+    setOrientation(mob, currentPosition, targetPosition)
     let xFactor = 0
     let yFactor = 0
     //all x movement
@@ -47,4 +57,33 @@ export default function moveOverPath(mob, time){
     mob.updatePosition(newPosition)
     mob.setDistance(mob.getDistance() - distanceToTravel)
     //mob.setStep(mob.getStep()+1)
+}
+
+function setOrientation(mob, current, next){
+    let x0 = current[0]
+    let y0 = current[1]
+    let x1 = next[0]
+    let y1 = next[1]
+
+    //all y movement
+    if (x0 == x1){
+        if (y0 - y1 < 0){
+            mob.orientation = direction.SOUTH
+            return
+        }
+        if (y0 - y1 > 0){
+            mob.orientation = direction.NORTH
+            return
+        }
+    }
+    //all x movement
+    else if (y0 == y1){
+        if (x0 - x1 < 0){
+            mob.orientation = direction.EAST
+            return
+        }
+        if (y0 - x1 > 0){
+            mob.orientation = direction.WEST
+        }
+    }
 }

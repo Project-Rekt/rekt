@@ -520,7 +520,7 @@ export default class World extends Engine.Stage {
   }
   //given indices of matrix, convert to real coordinates
   translateSectorToCoord(sector) {
-    return [sector[0] * 50, sector[1] * 50];
+    return [sector[0] * this.blockWidth, sector[1] * this.blockHeight];
   }
   //get mouse coords in term of matrix index
   getMouseXYSector(handler) {

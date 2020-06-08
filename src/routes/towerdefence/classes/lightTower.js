@@ -11,17 +11,19 @@ export default class LightTower extends Tower{
     }
 
     render = (dt) => {
+        this.realX = this.positionX * this.stage.blockWidth + this.stage.startX
+        this.realY = this.positionY * this.stage.blockHeight + this.stage.startY
         this.ctx.fillStyle = "lightblue";
-        this.ctx.fillRect(this.realX - 24, this.realY - 24, 49, 49);
+        this.ctx.fillRect(this.realX, this.realY, this.stage.blockWidth, this.stage.blockWidth);
 
         this.ctx.fillStyle = "white";
         this.ctx.font = "20px Arial";
         this.ctx.textAlign = "center";
-        this.ctx.fillText("L", this.realX, this.realY + 10);
+        this.ctx.fillText("L", this.realX + this.stage.blockWidth/2, this.realY + this.stage.blockWidth/2 + 8);
 
         this.ctx.strokeStyle = "white";
         this.ctx.beginPath();
-        this.ctx.arc(this.realX, this.realY, this.range * 50, 0, 2 * Math.PI);
+        this.ctx.arc(this.realX + this.stage.blockWidth/2, this.realY + this.stage.blockWidth/2, this.range * 50, 0, 2 * Math.PI);
         this.ctx.stroke();
     }
 

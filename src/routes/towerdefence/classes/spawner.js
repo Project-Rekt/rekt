@@ -18,8 +18,8 @@ export default class Spawner extends Engine.Actor {
         super({});
         this.positionX = x
         this.positionY = y
-        this.realx = (x + 1) * 50;
-        this.realy = (y + 1) * 50;
+        this.realx = 0//(x + 1) * 50;
+        this.realy = 0//(y + 1) * 50;
         this.path = [];
         this.mobs = [];
         this.spawned = [];
@@ -79,13 +79,16 @@ export default class Spawner extends Engine.Actor {
      *uses realx and realy not x, y, which are virtual representations, not graphical
      */
     render = (dt) => {
+        this.realX = this.positionX * this.stage.blockWidth + this.stage.startX
+        this.realY = this.positionY * this.stage.blockHeight + this.stage.startY
         this.ctx.fillStyle = "red";
-        this.ctx.fillRect(this.realx - 49, this.realy - 49, 49, 49);
+        this.ctx.fillRect(this.realX, this.realY, this.stage.blockWidth, this.stage.blockHeight);
+        //console.log(this.realX)
 
         this.ctx.fillStyle = "white";
         this.ctx.font = "20px Arial";
         this.ctx.textAlign = "center";
-        this.ctx.fillText("S", this.realx - 25, this.realy - 15);
+        this.ctx.fillText("S", this.realX + this.stage.blockWidth/2, this.realY + this.stage.blockWidth/2 + 8);
     }
 
     /*
@@ -115,12 +118,12 @@ export default class Spawner extends Engine.Actor {
         //console.log(mobType)
         let mob = new mobType({ x: 0, y: 0, width: 0, height: 0 })
         mob.scaleStats(this.scale)
-        mob.updatePosition([this.positionY, this.positionX])
         mob.setDistance(this.distance)
         mob.setPath(this.path)
-        //console.log(mob)
         this.stage.addActor(mob, 9)
+        mob.updatePosition([this.positionY, this.positionX])
         this.stage.addActive(mob)
+        //console.log(mob)
         if(mob instanceof Monster) {
             //console.log("YEAH BITCH")
             mob.ctx = this.stage.fCanvas.getContext('2d')

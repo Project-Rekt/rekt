@@ -133,8 +133,8 @@ export default class Monster extends Engine.SpriteActor {
    * update position for engine. pass x y values to function that translates virtual to visual position
    */
   updateRealPosition() {
-    this.bounds.x = this.positionX * 50;
-    this.bounds.y = this.positionY * 50;
+    this.bounds.x = this.positionX * this.stage.blockWidth + this.stage.startX;
+    this.bounds.y = this.positionY * this.stage.blockHeight + this.stage.startY;
   }
 
   destroyActor(){

@@ -10,8 +10,8 @@ export default class TerrainBlocker extends Engine.Actor{
         this.space = space //null indicates occupation of single tile
         this.positionX = x;
         this.positionY = y;
-        this.realX = (x + 1) * 50 - 25;
-        this.realY = (y + 1) * 50 - 25;
+        this.realX = 0;
+        this.realY = 0//(y + 1) * 50 - 25;
         this.cost = 0;
     }
 

@@ -141,8 +141,8 @@ export default class World extends Engine.Stage {
         //  new Node({ x: i - 25, y: j - 25, width: 2, height: 2 }),
         //  0
         //);
+        this.addActor(new Line({ x: j + this.startX, y: this.startY, width: 1, height: this.totalWidth }), 22);
       }
-      this.addActor(new Line({ x: i + this.startX, y: this.startY, width: 1, height: this.totalWidth }), 22);
       this.addActor(new Line({ x: this.startX, y: i + this.startY, width: this.totalWidth, height: 1 }), 22);
     }
     

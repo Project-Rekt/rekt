@@ -88,7 +88,7 @@ export default class Spawner extends Engine.Actor {
         this.ctx.fillStyle = "white";
         this.ctx.font = "20px Arial";
         this.ctx.textAlign = "center";
-        this.ctx.fillText("S", this.realX + this.stage.blockWidth/2, this.realY + this.stage.blockWidth/2 + 8);
+        this.ctx.fillText("S", this.realX + this.stage.blockWidth/2, this.realY + this.stage.blockHeight/2 + 8);
     }
 
     /*

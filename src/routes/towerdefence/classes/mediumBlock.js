@@ -17,6 +17,6 @@ export default class MediumBlock extends TerrainBlocker{
         this.ctx.fillStyle = "white";
         this.ctx.font = "20px Arial";
         this.ctx.textAlign = "center";
-        this.ctx.fillText("B", this.realX + this.stage.blockWidth, this.realY + this.stage.blockWidth/2 + 8);
+        this.ctx.fillText("B", this.realX + this.stage.blockWidth, this.realY + this.stage.blockHeight/2 + 8);
     }
 }

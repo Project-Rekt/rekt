@@ -141,7 +141,7 @@ export default class World extends Engine.Stage {
         //  new Node({ x: i - 25, y: j - 25, width: 2, height: 2 }),
         //  0
         //);
-        this.addActor(new Line({ x: j + this.startX, y: this.startY, width: 1, height: this.totalWidth }), 22);
+        this.addActor(new Line({ x: j + this.startX, y: this.startY, width: 1, height: this.totalHeight }), 22);
       }
       this.addActor(new Line({ x: this.startX, y: i + this.startY, width: this.totalWidth, height: 1 }), 22);
     }
@@ -515,7 +515,7 @@ export default class World extends Engine.Stage {
   //return if indices are in bounds of map
   isValidSector(sector) {
     return (
-      sector[0] >= 0 && sector[0] <= 11 && sector[1] >= 0 && sector[1] <= 11
+      sector[0] >= 0 && sector[0] <= this.numBlocksWide && sector[1] >= 0 && sector[1] <= this.numBlocksTall
     );
   }
   //given indices of matrix, convert to real coordinates

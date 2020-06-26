@@ -92,8 +92,8 @@ export default class Monster extends Engine.SpriteActor {
 
   updateZIndex(){
     //600 max y
-    let newZ = 9 + (this.positionY/600)
-    //console.log(newZ)
+    let newZ = 9 + (this.positionY/this.stage.numBlocksTall)
+    console.log(newZ)
     this.stage.changeIndex(this, newZ)
   }
 

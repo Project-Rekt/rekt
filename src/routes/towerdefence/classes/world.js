@@ -53,6 +53,18 @@ export default class World extends Engine.Stage {
     this.activeEnemies = []
 
     this.gui = new GUI(document.querySelector('.ui'), this);
+
+
+
+
+    this.startX = 25
+    this.startY = 25
+    this.blockWidth = 50
+    this.blockHeight = 50
+    this.numBlocksWide = 0
+    this.numBlocksTall = 0
+    this.totalWidth = 0
+    this.totalHeight = 0
   }
 
   /*
@@ -76,6 +88,11 @@ export default class World extends Engine.Stage {
       [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2] //11
       //[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11]
     ];
+
+    this.numBlocksWide = this.matrix[0].length
+    this.numBlocksTall = this.matrix.length
+    this.totalHeight = this.numBlocksTall * this.blockHeight
+    this.totalWidth = this.numBlocksWide * this.blockWidth
 
     this.waveTimer = new WaveTimer();
 
@@ -118,18 +135,18 @@ export default class World extends Engine.Stage {
 
 
     //add nodes(blue dots) and lines (white gridlines)
-    for (let i = 0; i <= 600; i += 50) {
-      for (let j = 0; j <= 600; j += 50) {
-        this.addActor(
-          new Node({ x: i - 25, y: j - 25, width: 2, height: 2 }),
-          0
-        );
+    for (let i = 0; i <= this.totalHeight; i += this.blockHeight) {
+      for (let j = 0; j <= this.totalWidth; j += this.blockWidth) {
+        //this.addActor(
+        //  new Node({ x: i - 25, y: j - 25, width: 2, height: 2 }),
+        //  0
+        //);
+        this.addActor(new Line({ x: j + this.startX, y: this.startY, width: 1, height: this.totalHeight }), 22);
       }
-      this.addActor(new Line({ x: i, y: 0, width: 1, height: 600 }), 22);
-      this.addActor(new Line({ x: 0, y: i, width: 600, height: 1 }), 22);
+      this.addActor(new Line({ x: this.startX, y: i + this.startY, width: this.totalWidth, height: 1 }), 22);
     }
     
-    this.addActor(new Background({ x: 0, y: 0, width: 600, height: 600 }), -1);
+    this.addActor(new Background("#000000"), -1)//{ x: 0, y: 0, width: 600, height: 600 }), -1);
     //this.spawners = [new Spawner(1, 1), new Spawner(6, 2), new Spawner(8, 5)];
     
     
@@ -498,16 +515,16 @@ export default class World extends Engine.Stage {
   //return if indices are in bounds of map
   isValidSector(sector) {
     return (
-      sector[0] >= 0 && sector[0] <= 11 && sector[1] >= 0 && sector[1] <= 11
+      sector[0] >= 0 && sector[0] <= this.numBlocksWide && sector[1] >= 0 && sector[1] <= this.numBlocksTall
     );
   }
   //given indices of matrix, convert to real coordinates
   translateSectorToCoord(sector) {
-    return [sector[0] * 50, sector[1] * 50];
+    return [sector[0] * this.blockWidth, sector[1] * this.blockHeight];
   }
   //get mouse coords in term of matrix index
   getMouseXYSector(handler) {
-    return [Math.floor(handler.input.x / 50), Math.floor(handler.input.y / 50)];
+    return [Math.floor((handler.input.x - this.startX) / this.blockWidth), Math.floor((handler.input.y - this.startY) / this.blockHeight)];
   }
   //get real mouse coords
   getMouseXY(handler) {
